@@ -9,7 +9,7 @@
 	FSLABEL=sea_awesome_wm
 	RELEASEVER=rawhide
 	TMPDIR=/mnt/$FSLABEL
-	VERBOSE="-v"
+	VERBOSE="#-v"
 #
 #	Action
 #

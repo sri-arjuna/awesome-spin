@@ -8,8 +8,8 @@
 # this template can override these settings)
 
 timezone Europe/Zurich --nontp
-##keyboard --vckeymap=ch --xlayouts='ch'
 keyboard sg
+keyboard --vckeymap=ch --xlayouts='ch'
 lang de_CH.UTF-8
 
 auth --useshadow --enablemd5
@@ -24,13 +24,13 @@ services --enabled=NetworkManager --disabled=network,sshd
 %include /usr/share/spin-kickstarts/fedora-repo-rawhide.ks
 %include /usr/share/spin-kickstarts/fedora-live-minimization.ks
 # Change paths to the files below
-##%include /home/sea/prjs/iso-awesome-sea/repo-non-foss.ks
 %include /home/sea/prjs/iso-awesome-sea/repo-sea.ks
-%include /home/sea/prjs/iso-awesome-sea/pkgs-dev.ks
+#%include /home/sea/prjs/iso-awesome-sea/pkgs-dev.ks
 %include /home/sea/prjs/iso-awesome-sea/pkgs-awesome.ks
 %include /home/sea/prjs/iso-awesome-sea/post-1-nochroot.ks
 %include /home/sea/prjs/iso-awesome-sea/post-2-chroot.ks
-
+## Below is currently disabled for space/time reasons
+##%include /home/sea/prjs/iso-awesome-sea/repo-non-foss.ks
 
 
 %packages

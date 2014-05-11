@@ -23,20 +23,21 @@ If there is space left, it'll be made multimediable.
 Build Instruction
 -----------------
 
-Copy the files to a folder, and edit the mk-iso-awesome-sea.sh,
-post-1-nochroot.ks and awesome.ks so that the paths match your system.
+Personaly, i do have my projects in $HOME/prjs/PROJECTNAME.
+Assuming you have a similar set up, here's the lazy setup:
 
-From within that folder, type:
 
-		sudo ln -s $(pwd)/mk-iso-awesome-sea.sh /usr/bin/
+	prj=$HOME/prjs/iso-awesome-sea
+	git clone https://github.com/sri-arjuna/awesome-spin.git $prj
+	sudo ln -s $prj/mk-iso-awesome-sea.sh /usr/bin/
 
-Now all you need to do, is a one time check if
-you have all required packages installed:
 
-		sudo yum install livecd-tools spin-kickstart
+Now edit the mk-iso-awesome-sea.sh, post-1-nochroot.ks and awesome.ks in
+the $prj directory, so that the paths match your system. 
 
-Now simply create the iso with:
+When done, simply type as regular user
 
 		sudo mk-iso-awesome-sea.sh
-		
-And enjoy the new iso in your $HOME directory.
+
+and enjoy the new iso in your $HOME directory.
+(Note, if run as root, the iso will be in root's home dir)

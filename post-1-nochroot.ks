@@ -13,7 +13,7 @@
 	mount_old=/var/tmp/img
 	home=/home/sea
 	prjs=$home/prjs/iso-awesome-sea
-	root=$mount_root/install_root
+	root="$(ls -d $mount_root/* | awk '{print $1}')/install_root"
 	
 	# Next 2 are to copy the kickstart files
 	# to the folder 'spin_file' in root's home
