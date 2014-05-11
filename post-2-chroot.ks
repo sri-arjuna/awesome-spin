@@ -1,5 +1,6 @@
 #
-#	Custom : in chroot
+#	Install retrieved packages
+#	Prepare custom /etc/skel files
 #
 %post
 #!/bin/sh
@@ -16,15 +17,15 @@
 	echo
 	echo "--	--	--	--		--"
 
-	/sea/tui/install.sh
+	sh /sea/tui/install.sh
 #
 #	'Install' my stuff, 
 #	that has been placed in $root/sea/NAME
 #
 	[ -d /etc/skel/.config ] || mkdir -p /etc/skel/.config
 	mv /sea/tui-sutra	/usr/share/tui-sutra
-	mv /sea/vicious	/usr/share/awesome/lib/vicious
-	mv /sea/awesome /etc/skel/.config/awesome
+	mv /sea/vicious		/usr/share/awesome/lib/vicious
+	mv /sea/awesome 	/etc/skel/.config/awesome
 	rmdir /sea
 #
 #	Customize... GRUB2 Theme & Plymouth
@@ -34,12 +35,12 @@
 		echo "GRUG_THEME=\"$theme\"" >> /etc/default/grub || \
 		sed s,"$(grep GRUB_THEME)","GRUB_THEME=\"$theme\"",g -i /etc/default/grub
 	
-	#tui-title "Rebuild grub2"
+#	tui-title "Rebuild grub2"
 	[ -f /boot/efi/EFI/fedora/grub.cfg ] && \
 		grb_cfg=/boot/efi/EFI/fedora/grub.cfg || \
 		grb_cfg=/boot/grub2/grub.cfg
 	grub2-mkconfig -o $grb_cfg
-	#tui-title "Rebuild plymouth"
+#	tui-title "Rebuild plymouth"
 	plymouth-set-default-theme solar -R
 #
 #	Prepare tui-sutra
@@ -53,7 +54,7 @@
 #
 #	XDG-User-Dirs
 #	
-	tui-title "TRY : Hardcoded /etc/skel/.config/user-dirs.dirs"
+#	tui-title "TRY : Hardcoded /etc/skel/.config/user-dirs.dirs"
 	cd /etc/skel
 	mkdir -p net/{dls,pub,web,fas/scm} \
 		notepad \

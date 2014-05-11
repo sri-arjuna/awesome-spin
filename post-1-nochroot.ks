@@ -1,8 +1,5 @@
 #
-#	Provides packages for the sea-console live image.
-#
-#
-#	Custom : no chroot
+#	Retrieve packages from the internet
 #
 %post --nochroot
 #!/bin/sh
@@ -13,7 +10,7 @@
 	mount_old=/var/tmp/img
 	home=/home/sea
 	prjs=$home/prjs/iso-awesome-sea
-	root="$(ls -d $mount_root/* | awk '{print $1}')/install_root"
+	root="$(printf $(ls -d $mount_root/* | awk '{print $1}')|tr -d [:space:])/install_root"
 	
 	# Next 2 are to copy the kickstart files
 	# to the folder 'spin_file' in root's home
@@ -32,7 +29,7 @@
 	[[ -d $root/sea ]] || mkdir -p $root/sea
 	git clone https://github.com/sri-arjuna/tui.git 		$root/sea/tui
 	git clone https://github.com/sri-arjuna/tui-sutra.git 		$root/sea/tui-sutra
-	git clone https://github.com/sri-arjuna/awesome-config.git	$root/sea/awesome
+	git clone https://github.com/sri-arjuna/awesome-config.git 	$root/sea/awesome
 #
 #	Get vicious
 #
