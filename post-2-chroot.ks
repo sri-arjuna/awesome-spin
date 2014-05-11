@@ -17,7 +17,8 @@
 	echo
 	echo "--	--	--	--		--"
 
-	sh /sea/tui/install.sh
+	sh -T /sea/tui/install.sh
+	
 #
 #	'Install' my stuff, 
 #	that has been placed in $root/sea/NAME
