@@ -26,11 +26,19 @@
 #	Retrieve 'my stuff'
 #
 	[[ -d $root/sea ]] || mkdir -p $root/sea
-	git clone https://github.com/sri-arjuna/tui.git 		$root/sea/tui
-	git clone https://github.com/sri-arjuna/tui-sutra.git 		$root/sea/tui-sutra
-	git clone https://github.com/sri-arjuna/awesome-config.git 	$root/sea/awesome
+	URL=https://github.com/sri-arjuna
+	git clone $URL/tui.git 			$root/sea/tui
+	git clone $URL/tui-sutra.git 		$root/usr/share/tui-sutra
 #
 #	Get vicious
 #
-	git clone http://git.sysphere.org/vicious 			$root/sea/vicious
+	git clone http://git.sysphere.org/vicious 			$root/usr/share/awesome/lib/vicious
+#
+#	User Configuration (/etc/skel)
+#
+	skel=$root/etc/skel
+	git clone $URL/awesome-config.git 	$skel/.config/awesome
+#	[[ -d $skel ]] || mkdir -p $skel
+#	list=$(find /home/sea/prjs/zz_unused/userdefaults-hackerstyle)
+#	cp $list $skel
 %end

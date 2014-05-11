@@ -34,7 +34,7 @@
 #
 #	Small additions, possible 'required' for multimedia
 #
-#	lsdvd
+	lsdvd
 #
 #	Removals from LXDE spin
 #
