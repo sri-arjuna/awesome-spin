@@ -28,15 +28,18 @@
 	[[ -d $root/sea ]] || mkdir -p $root/sea
 	URL=https://github.com/sri-arjuna
 	git clone $URL/tui.git 			$root/sea/tui
-	git clone $URL/tui-sutra.git 		$root/usr/share/tui-sutra
+	sleep 1
+	git clone $URL/tui-sutra.git 		$root/usr/share/sutra
 #
 #	Get vicious
 #
-	git clone http://git.sysphere.org/vicious 			$root/usr/share/awesome/lib/vicious
+	sleep 1
+	git clone http://git.sysphere.org/vicious 	$root/usr/share/awesome/lib/vicious
 #
 #	User Configuration (/etc/skel)
 #
 	skel=$root/etc/skel
+	sleep 1
 	git clone $URL/awesome-config.git 	$skel/.config/awesome
 #	[[ -d $skel ]] || mkdir -p $skel
 #	list=$(find /home/sea/prjs/zz_unused/userdefaults-hackerstyle)

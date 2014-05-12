@@ -1,71 +1,53 @@
-# fedora-live-base.ks
+# Based on: fedora-live-base.ks
 #
-# Defines the basics for all kickstarts in the fedora-live branch
-# Does not include package selection (other then mandatory)
-# Does not include localization packages or configuration
+# 	Change paths (/home/sea/...) to the files (where is awesome.ks?)
+#	To recieve a working rawhide live spin, you must build it on a rawhide host!
 #
-# Does includes "default" language configuration (kickstarts including
-# this template can override these settings)
-
-timezone Europe/Zurich --nontp
-keyboard sg
-keyboard --vckeymap=ch --xlayouts='ch'
-lang de_CH.UTF-8
-
-auth --useshadow --enablemd5
-selinux --enforcing
-firewall --enabled --service=mdns
-xconfig --startxonboot
-
-part / --size 3072 --fstype ext4
-services --enabled=NetworkManager --disabled=network,sshd
-
-#%include /usr/share/spin-kickstarts/fedora-repo.ks
-%include /usr/share/spin-kickstarts/fedora-repo-rawhide.ks
-%include /usr/share/spin-kickstarts/fedora-live-minimization.ks
-# Change paths to the files below
-%include /home/sea/prjs/iso-awesome-sea/repo-sea.ks
-#%include /home/sea/prjs/iso-awesome-sea/pkgs-dev.ks
-%include /home/sea/prjs/iso-awesome-sea/pkgs-awesome.ks
-%include /home/sea/prjs/iso-awesome-sea/post-1-nochroot.ks
-%include /home/sea/prjs/iso-awesome-sea/post-2-chroot.ks
-## Below is currently disabled for space/time reasons
-##%include /home/sea/prjs/iso-awesome-sea/repo-non-foss.ks
-
-
+#
+#	Includes, order required
+#	Default environment first
+#
+	%include 	/home/sea/prjs/iso-awesome-sea/system-settings.ks
+	%include 	/usr/share/spin-kickstarts/fedora-repo-rawhide.ks
+	%include 	/usr/share/spin-kickstarts/fedora-live-minimization.ks
+# AwesomeWM, here the customization begins
+	%include 	/home/sea/prjs/iso-awesome-sea/repo-sea.ks
+	%include 	/home/sea/prjs/iso-awesome-sea/pkgs-awesome.ks
+	%include 	/home/sea/prjs/iso-awesome-sea/pkgs-dev.ks
+# Multimedia - non foss
+	%include 	/home/sea/prjs/iso-awesome-sea/repo-non-foss.ks
+# Sytem changes, edit 'nochroot' to fix paths
+	%include 	/home/sea/prjs/iso-awesome-sea/post-1-nochroot.ks
+	%include 	/home/sea/prjs/iso-awesome-sea/post-2-chroot.ks
+# Disabled - perm
+	#%include /usr/share/spin-kickstarts/fedora-repo.ks
+#
+#	Packages
+#	These are the very basic required to display anaconda
+#	and have a functional live environment, even in a VM
+#
+#	The configuration for the custom spin, are in the other files
+#
 %packages
-# Minimal requires only:
-@core
-@hardware-support
-@standard
+#
+# Basic GUI
+#
+	@core
+	@hardware-support
+	@standard
+	@base-x
 
 # Might be removable
-# @@
-#dial-up
-@base-x
-##Basic-Desktop
-#fonts
-#multimedia
-#guest-desktop-agents
-#input-methods
-#printing
-
-# Explicitly specified here:
-# <notting> walters: because otherwise dependency loops cause yum issues.
-kernel
-
-# This was added a while ago, I think it falls into the category of
-# "Diagnosis/recovery tool useful from a Live OS image".  Leaving this untouched
-# for now.
-memtest86+
-
-# The point of a live image is to install
-anaconda
-@anaconda-tools
-
-# Make live images easy to shutdown and the like in libvirt
-qemu-guest-agent
-
+	#dial-up
+	#multimedia
+#
+# Required by LiveImage
+#
+	kernel
+	memtest86+
+	anaconda
+	@anaconda-tools
+	qemu-guest-agent
 %end
 
 %post

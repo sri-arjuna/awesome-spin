@@ -17,26 +17,29 @@
 	echo
 	echo "--	--	--	--		--"
 
-	sh -T /sea/tui/install.sh
+	sh -T /sea/tui/install.sh<<EOF
+
+EOF
 	cd /etc/skel
-	tar -axf /root/spin_files/userdefaults.tar.gz 
+	tar -axf /root/spin_files/userdefaults.tar.gz
 #
 #	Customize... GRUB2 Theme & Plymouth
 #
+	touch /etc/default/grub
 	theme=/usr/share/grub/themes/circled-nasa-spiral/theme.txt
-	[[ " = "$(grep GRUB_THEME)" ]] && \
+	[[ "" = "$(grep GRUB_THEME /etc/default/grub)" ]] && \
 		echo "GRUG_THEME=\"$theme\"" >> /etc/default/grub || \
-		sed s,"$(grep GRUB_THEME)","GRUB_THEME=\"$theme\"",g -i /etc/default/grub
+		sed s,GRUB_THEME=.*,"GRUB_THEME=\"$theme\"",g -i /etc/default/grub
 	
 	[ -f /boot/efi/EFI/fedora/grub.cfg ] && \
 		grb_cfg=/boot/efi/EFI/fedora/grub.cfg || \
 		grb_cfg=/boot/grub2/grub.cfg
 	#grub2-mkconfig -o $grb_cfg
-	plymouth-set-default-theme solar -R
+	#plymouth-set-default-theme solar -R
 #
 #	Prepare tui-sutra
 #
-	ln -s /usr/share/tui-sutra/sutra /usr/bin/sutra
+	ln -s /usr/share/sutra/sutra /usr/bin/sutra
 #
 #	XDG-User-Dirs
 #	
@@ -45,9 +48,9 @@
 		priv/{templates,docs,cloud} \
 		mm/{img,snd,vids} \
 		prjs
-
-
-# LXDE and LXDM configuration
+#
+# 	LXDE and LXDM configuration
+#
 
 # create /etc/sysconfig/desktop (needed for installation)
 cat > /etc/sysconfig/desktop <<EOF
@@ -74,11 +77,11 @@ FOE
 # set up auto-login for liveuser
 sed -i 's/# autologin=.*/autologin=liveuser/g' /etc/lxdm/lxdm.conf
 
-# Make awesome the default session
-sed -i 's/session=.*/session=/usr/bin/awesome/g' /etc/lxdm/lxdm.conf
+# Make awesome the default session, as Awesome is the only one, not required
+# sed -i 's,session=.*,session=/usr/bin/awesome,g' /etc/lxdm/lxdm.conf
 
 # Get a cool background
-sed -i 's/bg=.*/bg=/etc/skel/.config/awesome/img/background.jpg/g' /etc/lxdm/lxdm.conf
+sed -i 's,bg=.*,bg=/etc/skel/.config/awesome/img/background.jpg,g' /etc/lxdm/lxdm.conf
 
 # Show harddisk install on the desktop
 sed -i -e 's/NoDisplay=true/NoDisplay=false/' /usr/share/applications/liveinst.desktop
