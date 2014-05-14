@@ -5,11 +5,22 @@
 	home=/home/sea
 	CFG=$home/prjs/iso-awesome-sea/awesome.ks
 	usr=${home##*/}
-	TITLE="Sea's Awesome WM"
+	TITLE="AwesomeWM by sea"
 	FSLABEL=sea_awesome_wm
 	RELEASEVER=rawhide
 	TMPDIR=/mnt/$FSLABEL
 	VERBOSE="-v"
+#
+#	Pre-clean temp dir
+#
+	[[ -d $TMPDIR ]] || mkdir -p $TMPDIR
+	cd $TMPDIR
+	if [ ! "" = "$(ls)" ]
+	then	[ ! $(pwd) = "$TMPDIR" ] && echo "Wrong path" && exit 1
+		echo "Cleaning up: $TMPDIR"
+		umount $(find -type d)
+		rm -fr * || exit 1
+	fi
 #
 #	Action
 #

@@ -20,8 +20,18 @@
 	sh -T /sea/tui/install.sh<<EOF
 
 EOF
-	cd /etc/skel
-	tar -axf /root/spin_files/userdefaults.tar.gz
+	cd /root/spin_files/skel/
+	cp -R $(find) /etc/skel
+	# Make self sustainable:
+	ln -s /root/spin_files/mk-iso-awesome-sea /usr/bin
+	S="/home/sea/prjs/iso-awesome-sea"
+	R="/root/spin_files"
+	
+	# $This should change all values matching /home/sea/prjs to /root/spin_files
+	cd $R
+	for f in *;do
+		grep -q "$S" $f && sed s,"$S","$R",g -i $f
+	done
 #
 #	Customize... GRUB2 Theme & Plymouth
 #
@@ -75,13 +85,13 @@ MailClient=thunderbird.desktop
 FOE
 
 # set up auto-login for liveuser
-sed -i 's/# autologin=.*/autologin=liveuser/g' /etc/lxdm/lxdm.conf
+sed -i s/"# autologin=dgod"/"autologin=liveuser"/g /etc/lxdm/lxdm.conf
 
 # Make awesome the default session, as Awesome is the only one, not required
-# sed -i 's,session=.*,session=/usr/bin/awesome,g' /etc/lxdm/lxdm.conf
+# sed -i s,"session=/usr/bin/startlxde","session=/usr/bin/awesome",g /etc/lxdm/lxdm.conf
 
 # Get a cool background
-sed -i 's,bg=.*,bg=/etc/skel/.config/awesome/img/background.jpg,g' /etc/lxdm/lxdm.conf
+sed -i s,"bg=/usr/share/backgrounds/default.png","bg=/etc/skel/.config/awesome/img/background.jpg",g /etc/lxdm/lxdm.conf
 
 # Show harddisk install on the desktop
 sed -i -e 's/NoDisplay=true/NoDisplay=false/' /usr/share/applications/liveinst.desktop

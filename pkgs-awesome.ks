@@ -23,8 +23,9 @@
 	gnumeric
 	gpicview
 	gtk-recordmydesktop
-	mtpaint
 	lxterminal
+	mtpaint
+	pcmanfm
 	recordmydesktop
 #	rhythmbox
 	thunderbird

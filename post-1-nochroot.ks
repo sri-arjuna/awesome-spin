@@ -16,7 +16,7 @@
 # 	to the folder 'spin_file' in root's home
 #	
 	dir_target="$root/root/spin_files"
-	dir_src="$(ls $prjs/*)"
+	dir_src="$(find $prjs)"
 #
 # 	Copy requires kickstarts files to the image's /root/spin_file
 #

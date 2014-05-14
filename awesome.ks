@@ -15,12 +15,13 @@
 	%include 	/home/sea/prjs/iso-awesome-sea/pkgs-awesome.ks
 	%include 	/home/sea/prjs/iso-awesome-sea/pkgs-dev.ks
 # Multimedia - non foss
-	%include 	/home/sea/prjs/iso-awesome-sea/repo-non-foss.ks
+	#%include 	/home/sea/prjs/iso-awesome-sea/repo-non-foss.ks
 # Sytem changes, edit 'nochroot' to fix paths
 	%include 	/home/sea/prjs/iso-awesome-sea/post-1-nochroot.ks
 	%include 	/home/sea/prjs/iso-awesome-sea/post-2-chroot.ks
 # Disabled - perm
 	#%include /usr/share/spin-kickstarts/fedora-repo.ks
+#
 #
 #	Packages
 #	These are the very basic required to display anaconda
