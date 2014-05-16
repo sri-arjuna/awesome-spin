@@ -36,7 +36,8 @@ EOF
 	#cd /etc/skel
 	## ERROR SEEMS TO BE HERE ##				DEBUG
 	#tar -axf $R/skel.tar.gz
-	#cp -r $R/* .
+	cd $R
+	cp -r * .[a-z]* /etc/skel
 	
 	# $This should change all values matching /home/sea/prjs to /root/spin_files
 	cd $R
