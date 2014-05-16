@@ -3,7 +3,7 @@
 #	Prepare custom /etc/skel files
 #
 %post
-#!/bin/sh
+#!/bin/sh -x
 #
 #	Do install tui, so reporting is more visible
 #
@@ -17,15 +17,26 @@
 	echo
 	echo "--	--	--	--		--"
 
-	sh -T /sea/tui/install.sh<<EOF
+	sh -T /tmp/tui/install.sh<<EOF
 
 EOF
-	cd /root/spin_files/skel/
-	cp -R $(find) /etc/skel
-	# Make self sustainable:
-	ln -s /root/spin_files/mk-iso-awesome-sea /usr/bin
+#
+# 	Make self sustainable:
+#	* prepare skel
+#	* prepare symlink
+#	* sed scripts
+#
+	# S for search
 	S="/home/sea/prjs/iso-awesome-sea"
 	R="/root/spin_files"
+	ln -s $R/mk-iso-awesome-sea /usr/bin/mk-my-awesome
+	#ls --color=auto /usr/bin/mk-my-awesome
+	
+	[ -d /etc/skel ] || mkdir -p /etc/skel
+	#cd /etc/skel
+	## ERROR SEEMS TO BE HERE ##				DEBUG
+	#tar -axf $R/skel.tar.gz
+	#cp -r $R/* .
 	
 	# $This should change all values matching /home/sea/prjs to /root/spin_files
 	cd $R
@@ -35,7 +46,7 @@ EOF
 #
 #	Customize... GRUB2 Theme & Plymouth
 #
-	touch /etc/default/grub
+	[ -f /etc/default/grub ] || touch /etc/default/grub
 	theme=/usr/share/grub/themes/circled-nasa-spiral/theme.txt
 	[[ "" = "$(grep GRUB_THEME /etc/default/grub)" ]] && \
 		echo "GRUG_THEME=\"$theme\"" >> /etc/default/grub || \
@@ -53,21 +64,25 @@ EOF
 #
 #	XDG-User-Dirs
 #	
+	cd /etc/skel
 	mkdir -p net/{dls,pub,web,fas/scm} \
 		notepad \
 		priv/{templates,docs,cloud} \
 		mm/{img,snd,vids} \
-		prjs
+		prjs \
+		data
 #
 # 	LXDE and LXDM configuration
 #
-
+	echo "Writing LXDE & LXDM conf"
 # create /etc/sysconfig/desktop (needed for installation)
 cat > /etc/sysconfig/desktop <<EOF
 PREFERRED=/usr/bin/awesome
 DISPLAYMANAGER=/usr/sbin/lxdm
 EOF
 
+# EOF Starts here
+	echo "Writing livesys"
 cat >> /etc/rc.d/init.d/livesys << EOF
 # disable screensaver locking and make sure gamin gets started
 cat > /etc/xdg/lxsession/LXDE/autostart << FOE
@@ -77,13 +92,16 @@ cat > /etc/xdg/lxsession/LXDE/autostart << FOE
 /usr/libexec/notification-daemon
 FOE
 
+	echo "Writing prefered apps"
 # set up preferred apps 
 cat > /etc/xdg/libfm/pref-apps.conf << FOE 
 [Preferred Applications]
 WebBrowser=firefox.desktop
 MailClient=thunderbird.desktop
 FOE
+EOF
 
+	echo "SED'ing lxdm.conf"
 # set up auto-login for liveuser
 sed -i s/"# autologin=dgod"/"autologin=liveuser"/g /etc/lxdm/lxdm.conf
 
@@ -91,15 +109,17 @@ sed -i s/"# autologin=dgod"/"autologin=liveuser"/g /etc/lxdm/lxdm.conf
 # sed -i s,"session=/usr/bin/startlxde","session=/usr/bin/awesome",g /etc/lxdm/lxdm.conf
 
 # Get a cool background
-sed -i s,"bg=/usr/share/backgrounds/default.png","bg=/etc/skel/.config/awesome/img/background.jpg",g /etc/lxdm/lxdm.conf
+mv /usr/share/backgrounds/default.png /usr/share/backgrounds/default-fedora.png
+cp /etc/skel/.config/awesome/img/background.jpg /usr/share/backgrounds/default.png
+#sed -i s,"bg=/usr/share/backgrounds/default.png","bg=/etc/skel/.config/awesome/img/background.jpg",g /etc/lxdm/lxdm.conf
 
 # Show harddisk install on the desktop
 sed -i -e 's/NoDisplay=true/NoDisplay=false/' /usr/share/applications/liveinst.desktop
 mkdir /home/liveuser/notepad
-cp /usr/share/applications/liveinst.desktop /home/liveuser/notepad
+cp /usr/share/applications/liveinst.desktop /home/liveuser/notepad/liveinst.desktop
 
+	echo "selinux restorecon"
 # this goes at the end after all other changes.
 chown -R liveuser:liveuser /home/liveuser
 restorecon -R /home/liveuser
-EOF
 %end

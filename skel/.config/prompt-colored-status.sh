@@ -69,3 +69,4 @@
 #	PS1
 #
 	export PS1="$RET_RND${reset} \w $(return_user_color)\\\$${reset} "
+

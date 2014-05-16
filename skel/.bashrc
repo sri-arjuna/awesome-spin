@@ -1,4 +1,5 @@
-# .bashrc
+#!/bin/bash
+# .bashrc by sea, designed for sea's spin using AwesomeWM
 #
 #	Sources
 #
@@ -22,7 +23,7 @@
 	alias ll="ls -l"
 	alias lla="ls -la"
 	alias la="ls -a"
-	alias blame-log="blame >> $HOME/blame.log;cat $HOME/data/blame.log"
+	alias blame-log="blame >> $HOME/data/blame.log;cat $HOME/data/blame.log"
 	alias pis="tui-browser \
 		-t 'Script Manager' \
 		-d 'Cathegory' \
@@ -32,3 +33,4 @@
 #	Execute on terminal display
 #
 	#sutra
+
