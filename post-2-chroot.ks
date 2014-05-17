@@ -1,23 +1,12 @@
 #
 #	Install retrieved packages
-#	Prepare custom /etc/skel files
 #
 %post
-#!/bin/sh -x
+#!/bin/sh
 #
 #	Do install tui, so reporting is more visible
 #
-	echo "--	--	--	--		--"
-	echo
-	echo
-
-	echo "		start chroot...		DEBUG"
-
-	echo
-	echo
-	echo "--	--	--	--		--"
-
-	sh -T /tmp/tui/install.sh<<EOF
+	sh -T /tmp/tui/install.sh > /dev/zero <<EOF
 
 EOF
 #
@@ -30,18 +19,9 @@ EOF
 	S="/home/sea/prjs/iso-awesome-sea"
 	R="/root/spin_files"
 	ln -s $R/mk-iso-awesome-sea /usr/bin/mk-my-awesome
-	#ls --color=auto /usr/bin/mk-my-awesome
-	
-	[ -d /etc/skel ] || mkdir -p /etc/skel
-	#cd /etc/skel
-	## ERROR SEEMS TO BE HERE ##				DEBUG
-	#tar -axf $R/skel.tar.gz
-	cd $R
-	cp -r * .[a-z]* /etc/skel
-	
-	# $This should change all values matching /home/sea/prjs to /root/spin_files
 	cd $R
 	for f in *;do
+		#echo $f
 		grep -q "$S" $f && sed s,"$S","$R",g -i $f
 	done
 #
@@ -62,16 +42,6 @@ EOF
 #	Prepare tui-sutra
 #
 	ln -s /usr/share/sutra/sutra /usr/bin/sutra
-#
-#	XDG-User-Dirs
-#	
-	cd /etc/skel
-	mkdir -p net/{dls,pub,web,fas/scm} \
-		notepad \
-		priv/{templates,docs,cloud} \
-		mm/{img,snd,vids} \
-		prjs \
-		data
 #
 # 	LXDE and LXDM configuration
 #
@@ -100,27 +70,31 @@ cat > /etc/xdg/libfm/pref-apps.conf << FOE
 WebBrowser=firefox.desktop
 MailClient=thunderbird.desktop
 FOE
-EOF
 
 	echo "SED'ing lxdm.conf"
 # set up auto-login for liveuser
-sed -i s/"# autologin=dgod"/"autologin=liveuser"/g /etc/lxdm/lxdm.conf
+#sed -i s/"# autologin=dgod"/"autologin=liveuser"/g /etc/lxdm/lxdm.conf
 
 # Make awesome the default session, as Awesome is the only one, not required
-# sed -i s,"session=/usr/bin/startlxde","session=/usr/bin/awesome",g /etc/lxdm/lxdm.conf
+ sed -i s,"session=/usr/bin/startlxde","session=/usr/bin/awesome",g /etc/lxdm/lxdm.conf
 
 # Get a cool background
 mv /usr/share/backgrounds/default.png /usr/share/backgrounds/default-fedora.png
-cp /etc/skel/.config/awesome/img/background.jpg /usr/share/backgrounds/default.png
-#sed -i s,"bg=/usr/share/backgrounds/default.png","bg=/etc/skel/.config/awesome/img/background.jpg",g /etc/lxdm/lxdm.conf
+ln -s /etc/skel/.config/awesome/img/background.jpg /usr/share/backgrounds/default.png
+sed -i s,"bg=/usr/share/backgrounds/default.png","bg=/etc/skel/.config/awesome/img/background.jpg",g /etc/lxdm/lxdm.conf
 
 # Show harddisk install on the desktop
 sed -i -e 's/NoDisplay=true/NoDisplay=false/' /usr/share/applications/liveinst.desktop
-mkdir /home/liveuser/notepad
-cp /usr/share/applications/liveinst.desktop /home/liveuser/notepad/liveinst.desktop
+cp /usr/share/applications/liveinst.desktop /home/liveuser/liveinst.desktop
+
+
+# Remove language panel
+sed -i s/"lang=1"/"lang=0"/g /etc/lxdm/lxdm.conf
 
 	echo "selinux restorecon"
 # this goes at the end after all other changes.
 chown -R liveuser:liveuser /home/liveuser
 restorecon -R /home/liveuser
+
+EOF
 %end

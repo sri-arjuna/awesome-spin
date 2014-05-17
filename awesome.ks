@@ -14,11 +14,12 @@
 	%include 	/home/sea/prjs/iso-awesome-sea/repo-sea.ks
 	%include 	/home/sea/prjs/iso-awesome-sea/pkgs-awesome.ks
 	%include 	/home/sea/prjs/iso-awesome-sea/pkgs-dev.ks
-# Multimedia - non foss
-	#%include 	/home/sea/prjs/iso-awesome-sea/repo-non-foss.ks
-# Sytem changes, edit 'nochroot' to fix paths
+# Multimedia & non foss additions
+	%include 	/home/sea/prjs/iso-awesome-sea/repo-non-foss.ks
+# Sytem changes
 	%include 	/home/sea/prjs/iso-awesome-sea/post-1-nochroot.ks
 	%include 	/home/sea/prjs/iso-awesome-sea/post-2-chroot.ks
+	%include 	/home/sea/prjs/iso-awesome-sea/post-3-skel.ks
 # Disabled - perm
 	#%include /usr/share/spin-kickstarts/fedora-repo.ks
 #
@@ -40,7 +41,7 @@
 
 # Might be removable
 	#dial-up
-	#multimedia
+	@multimedia
 #
 # Required by LiveImage
 #

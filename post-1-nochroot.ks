@@ -2,16 +2,7 @@
 #	Retrieve packages from the internet
 #
 %post --nochroot
-#!/bin/sh -x
-	echo "--	--	--	--		--"
-	echo
-	echo
-
-	echo "		start non-chroot...		DEBUG"
-
-	echo
-	echo
-	echo "--	--	--	--		--"
+#!/bin/sh
 #
 #	Variables
 #
@@ -28,16 +19,13 @@
 	dir_target="$root/root/spin_files"
 	dir_src=$prjs
 	[[ -d $root/tmp ]] || mkdir -p $root/tmp
-	[[ -d $dir_target ]] || mkdir -p $dir_target/skel
+	[[ -d $dir_target ]] || mkdir -p $dir_target
 #
-# 	Copy requires kickstarts files to the image's /root/spin_file			## BUGGY HERE TODO
+# 	Copy requires kickstarts files to the image's /root/spin_file
 #
 	# Prepare subfolder to be copied
-	cd "${dir_src}/skel"
-	cp -r * $dir_target/skel
-	cd ${dir_src}
-	tar acf	skel.tar.gz skel
-	cp -Tr	"${dir_src}"/* 		$dir_target
+	cd "${dir_src}"
+	cp 	* 	$dir_target
 #
 #	Retrieve 'my stuff'
 #

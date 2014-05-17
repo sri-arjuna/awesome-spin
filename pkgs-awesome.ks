@@ -27,7 +27,7 @@
 	mtpaint
 	pcmanfm
 	recordmydesktop
-#	rhythmbox
+	rhythmbox
 	thunderbird
 	totem
 	transmission
