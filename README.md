@@ -24,9 +24,9 @@ Get the iso
 Thanks to http://sourceforge.com i may offer you direct downloads of my built iso files.
 You may download them from:
 
-	Universal Netboot Installer[https://sourceforge.net/projects/awesomewmspin/files/?source=navbar]
+	[SourceForge Project Files](https://sourceforge.net/projects/awesomewmspin/files/?source=navbar)
 	
-If you are running Windows or Apple, you may want to use Unetbootin[https://sourceforge.net/projects/unetbootin/] to write the iso to an USB-Stick.
+If you are running Windows or Apple, you may want to use [Universal Netboot Installer](https://sourceforge.net/projects/unetbootin/) to write the iso to an USB-Stick.
 If you are running Linux, Unix or BSD version, simply use dd, as in: `dd file.iso /dev/sdu`
 
 
