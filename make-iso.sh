@@ -58,7 +58,7 @@
 	cd "$SRC_DIR"
 	
 	
-	time $pre livecd-creator -c "$CFG" -t "$TITLE" -f "$FSLABEL" --releasever=$RELEASEVER --tmpdir="$TMPDIR$ARCH" $VERBOSE
+	time $pre livecd-creator -c "$CFG" -t "$TITLE" -f "$FSLABEL" --releasever=$RELEASEVER --tmpdir="$TMPDIR" $VERBOSE
 	RET=$?
 	
 	printf "\n\n"
