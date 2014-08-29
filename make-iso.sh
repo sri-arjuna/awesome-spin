@@ -14,6 +14,12 @@
 	. ./make-iso.conf
 	usr=${home##*/}
 	CFG=$SRC_DIR/$prj.ks
+	if $make32
+	then	pre="setarch i686"
+		ARCH=32
+	else	pre=""
+		ARCH=64
+	fi
 #
 #	Variables Dynamic
 #
@@ -22,7 +28,7 @@
 		RELEASEVER=$1
 	[[ $RELEASEVER = rawhide ]] && \
 		CFG=${CFG/$prj.ks/$prj-rawhide.ks}
-	FSLABEL=${DISTRO}_${RELEASEVER}_$prj
+	FSLABEL=${DISTRO}_${RELEASEVER}_$prj_$ARCH
 	TITLE="$DISTRO $RELEASEVER ($prj) by $usr"
 	TMPDIR=/mnt/$FSLABEL
 	VERBOSE="-v"
@@ -48,8 +54,11 @@
 	printf "\n\n\tStart building \"$TITLE\"...\n\n"
 	sleep 2
 	cd "$SRC_DIR"
-	time livecd-creator -c "$CFG" -t "$TITLE" -f $FSLABEL --releasever=$RELEASEVER --tmpdir="$TMPDIR" $VERBOSE
+	
+	
+	time $pre livecd-creator -c "$CFG" -t "$TITLE" -f "$FSLABEL" --releasever=$RELEASEVER --tmpdir="$TMPDIR$ARCH" $VERBOSE
 	RET=$?
+	
 	printf "\n\n"
 	if [[ 0 -eq $RET ]]
 	then 	mv "$FSLABEL.iso" "$home/"

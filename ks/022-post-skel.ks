@@ -72,6 +72,7 @@ EOF
 #
 # Set up .config / dirs
 #
+	mkdir /etc/skel/.config
 	cd /etc/skel/.config
 	cat > user-dirs.dirs << EOF
 # This file is written by xdg-user-dirs-update
