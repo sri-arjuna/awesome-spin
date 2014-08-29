@@ -1,0 +1,14 @@
+#
+#	Customize... GRUB2 Theme & Plymouth
+#
+	[ -f /etc/default/grub ] || touch /etc/default/grub
+	theme=/usr/share/grub/themes/circled-nasa-spiral/theme.txt
+	[[ "" = "$(grep GRUB_THEME /etc/default/grub)" ]] && \
+		echo "GRUG_THEME=\"$theme\"" >> /etc/default/grub || \
+		sed s,GRUB_THEME=.*,"GRUB_THEME=\"$theme\"",g -i /etc/default/grub
+	
+	[ -f /boot/efi/EFI/fedora/grub.cfg ] && \
+		grb_cfg=/boot/efi/EFI/fedora/grub.cfg || \
+		grb_cfg=/boot/grub2/grub.cfg
+	#grub2-mkconfig -o $grb_cfg
+	#plymouth-set-default-theme solar -R

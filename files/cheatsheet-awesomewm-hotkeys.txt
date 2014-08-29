@@ -1,0 +1,11 @@
+## mod4 = Windows Button
+## [1-9] = any number between 1 to 9
+mod4 + ENTER				Opens a new terminal
+mod4 + r				Enter a command/application
+mod4 + [1-9]		(switch)	Desktop
+mod4 + ctrl + [1-9]	(toggle)	Add Desktop [1-9] to current screen
+mod4 + shift + [1-9]			Send active window to Desktop #[1-9]
+mod4 + f		(toggle) 	Make active window fullscreen
+mod4 + space		(next)  	Window arrangement
+mod4 + shift + space 	(previous)	Window arrangement
+mod4 + ctrl + r				Reload configuration (!! additional windows !!)
