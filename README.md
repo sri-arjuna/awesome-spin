@@ -5,7 +5,7 @@ AwesomeWM LiveSpin by (sea)
 Description
 -----------
 
-This spin is localized to SwissGerman keyboard layout.
+This spin aims to be localized to SwissGerman keyboard layout.
 Also it is optimized for my taste of linux experience,
 this might not be everyone's taste, and thats just fine.
 
@@ -25,15 +25,15 @@ Thanks to http://sourceforge.com i may offer you direct downloads of my built is
 You may download them from: [SourceForge Project Files](https://sourceforge.net/projects/awesomewmspin/files/?source=navbar)
 	
 If you are running Windows or Apple, you may want to use [Universal Netboot Installer](https://sourceforge.net/projects/unetbootin/) to write the iso to an USB-Stick.
-If you are running Linux, Unix or BSD version, simply use dd, as in: `dd file.iso /dev/sdu`
+If you are running Linux, Unix or BSD version, simply use dd,
+as in: `dd file.iso /dev/sdu`
 
 
 Build Instruction
 -----------------
 
-Personaly, i do have my projects in $HOME/prjs/PROJECTNAME (change 'prj=' to whatever path applies to you).
-Assuming you have a similar set up, here's the lazy setup:
-
+Personaly, i do have my projects in $HOME/prjs/PROJECTNAME.
+You can keep that, or change 'prj=' to whatever path applies to you:
 
 	prj=$HOME/prjs/iso-awesome-sea
 	git clone git://git.code.sf.net/p/awesomewmspin/code $prj

@@ -7,11 +7,13 @@
 #	Get required apps
 #
 	which livecd-creator 2>/dev/zero 1>/dev/zero || \
-		(printf "Installing required applications, please wait...\n";yum -q -y install livecd-tools spin-kickstarts)
+		(printf "Installing required applications, please wait...\n";yum -q -y install livecd-tools spin-kickstarts git)
 #
 #	Variables Fixed (external)
 #
 	. ./make-iso.conf
+	. /etc/os-release 
+
 	usr=${home##*/}
 	CFG=$SRC_DIR/$prj.ks
 	if $make32
@@ -24,12 +26,12 @@
 #	Variables Dynamic
 #
 	[[ -z $1 ]] && \
-		RELEASEVER=rawhide || \
+		RELEASEVER=$VERSION_ID || \
 		RELEASEVER=$1
 	[[ $RELEASEVER = rawhide ]] && \
 		CFG=${CFG/$prj.ks/$prj-rawhide.ks}
-	FSLABEL=${DISTRO}_${RELEASEVER}_$prj_$ARCH
-	TITLE="$DISTRO $RELEASEVER ($prj) by $usr"
+	FSLABEL=${DISTRO}_${RELEASEVER}_${prj}_${ARCH}
+	TITLE="$DISTRO $RELEASEVER ($prj) ${ARCH}bit by sea"
 	TMPDIR=/mnt/$FSLABEL
 	VERBOSE="-v"
 	printf "$TMPDIR" > /tmp/make-iso.tmp
@@ -41,7 +43,7 @@
 	[[ -d "$TMPDIR" ]] || mkdir -p "$TMPDIR"
 	cd "$TMPDIR"
 	if [ ! "" = "$(ls)" ]
-	then	[ ! $(pwd) = "$TMPDIR" ] && echo "Wrong path" && exit 1
+	then	[ ! $(pwd) = "$TMPDIR" ] && echo "Wrong path :: $(pwd)" && exit 1
 		echo "Cleaning up: $TMPDIR"
 		umount $(find -type d)
 		rm -fr * || exit 1
