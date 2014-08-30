@@ -11,6 +11,7 @@
 	lxdm
 	plymouth-theme-solar
 	vicious
+	tui
 	wget
 	xscreensaver-gl-extras
 #

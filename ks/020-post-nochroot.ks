@@ -23,9 +23,12 @@
 #
 # 	Copy requires kickstarts files to the image's /root/spin_file
 #
-	# Prepare subfolder to be copied
-	cd "${dir_src}"
-	cp 	* 	$dir_target
+	# Prepare subfolder to be copied to /root/spin_files
+	cd "${prjs}"
+	pwd
+	sleep 3
+	cp -fr	*	 	$dir_target
+	cp -fr	.[a-zA-Z]* 	$dir_target
 #
 #	Retrieve 'my stuff'
 #
@@ -33,15 +36,10 @@
 	sleep 1
 	git clone $URL/tui-sutra.git 		$root/usr/share/sutra
 #
-#	Get vicious
-#
-	#echo "Getting vicious"
-	#sleep 2
-	#git clone http://git.sysphere.org/vicious 	$root/usr/share/awesome/lib/vicious
-#
 #	User Configuration (/etc/skel)
 #
 	skel=$root/etc/skel
 	sleep 1
 	git clone $URL/awesome-config.git 	$skel/.config/awesome
+	git clone $URL/awesome-config.git 	$root/tmp/awesome
 %end

@@ -1,0 +1,295 @@
+#!/bin/bash
+#
+#	Author: 	Simon Arjuna Erat (sea)
+#	Contact:	erat.simon@gmail.com
+#	License:	GNU Lesser General Public License (LGPL)
+#	Created:	2014.04.21
+#	Changed:	2014.04.28
+	script_version=0.5
+#	Description:	Descriptional text goes here
+#
+#	Variables
+#
+	source tui
+	ME="${0##*/}"
+	TITLE="Signature generator"
+	T=" - "
+	help_text="
+$ME ($script_version)
+$TITLE
+Usage: 	$ME [options] [arguments]
+Where options are:
+	-h	This screen
+	-d	Use all default values
+	-n	Outputs your device's info as: \"LABEL: INFO\"
+	-b	Outputs your device's info as BB code
+	-a	Outputs all scripted values
+	-s	Outputs minimal values
+	-l STR	Sets BB color for label
+	-v STR	Sets BB color for value
+	-t STR	Sets seperation sign (default '$T')
+"
+	#-f	Outputs your device's info as fluent text (attempt)
+	if [ ! -d /usr/share/tui ]
+	then 	# My GIT Stuff
+		echo
+		echo
+		echo "	Installing TUI..."
+		echo
+		echo 
+		! type git > /dev/zero && \
+			echo "Installing GIT, a source code manager...." && \
+			yum install -y git 2>&1
+		git clone https://github.com/sri-arjuna/tui.git /tmp/tui.inst
+		sh /tmp/tui.inst/install.sh | echo y
+		rm -fr /tmp/tui.inst
+	fi	
+
+
+	OUTPUT_FORMATS="BB noBB" # fluent
+	FORMAT=""
+	OUTPUT_STYLE="custom default all short"
+	STYLE=""
+	AUTO_MODE=""
+	TASK_LIST="DEVICE CPU RAM SWAP GRAPHIC SOUND DISTRO KERNEL"
+	fcolor=" Orange DarkOrange Red DarkRed DimGray Gray Silver Yellow YellowGreen Green Lime Olive DarkOliveGreen DarkGreen Purple DarkOrchid Plum LightBlue PaleGreen Teal Blue DeepSkyBlue DarkSlateBlue Navy RoyalBlue "
+	BB_COLOR_LABEL="DimGray"
+	BB_COLOR_VALUE="RoyalBlue"
+	OUTPUT_BB=""
+	OUTPUT_noBB=""
+	OUTPUT_FLUENT=""
+	OUTPUT_LONG=""
+	COLOR_SET=false
+	doAuto=false
+#
+#	Functions
+#
+	Colorize() { # COLOR STRING
+	# Descriptional, ...
+	# Text here
+		echo "[color=$1]$2[/color]"
+	}
+	GetInfo() { # TYPE
+	# Prints the value of TYPE
+	# If no TYPE is provided, it prints a list of available TYPE's
+		getinfo=""
+		search=""
+		TASK_LIST="chassis device cpu gpu ram swap sound hdd distro kernel de"
+		case $1 in
+		chassis)search="chassis-type"	;;
+		device)	dmidecode -s system-manufacturer
+			search="system-product-name"	;;
+		cpu)	vend=$(dmidecode -s processor-manufacturer)
+			fam=$(dmidecode -s processor-family|sed s,Core,,g)
+			freq=$(dmidecode -s processor-frequency)
+			threads=$(ls /sys/devices/system/cpu/cpu[0-9] -d|wc -l)
+			cores=$[ $threads / 2 ]
+			printf "$vend $fam $threads*$freq"
+			return 0
+			search="processor-version"	;;
+		ram)	val=$(dmidecode |grep "Memory Device" -A7|grep Size|grep -v Range|awk '{SUM=SUM+$2;print SUM}')
+			printf "$(echo $val|awk '{print $2}') MB"
+			return 0	;;
+		swap)	total="$(free |grep -i swap|awk '{print $2/1024}')"
+			free="$(free |grep -i swap|awk '{print $2/1024}')"
+			printf "$total MB"
+			return 0	;;
+		gpu)	val=$(lspci|grep 3D)
+			if [[ ! -z "$val" ]] ; then
+				if [ ! "" = "$(echo $val|grep -i nvi)" ]
+				then 	# Its nvidia
+					echo "$val"|grep 3D|awk '{print $7" "$8" "$9}'|sed s,"\[",'',g|sed s,"\]","",g
+					return 0
+				else	# its something else
+					echo "$val"|awk '{print $4" "$5" "$6" "$7" "$8" "$9}'
+					echo TODO
+					return 0
+				fi
+			fi
+			lspci|grep -i vga|awk '{print $5" "$6" "$7" "$8" "$9}'
+			return 0	;;
+		hdd)	for val in $(fdisk /dev/[hs]d[a-z] -l|grep ^"Disk /"|awk '{print $3}')
+			do 	val2=$(echo $val|sed s/"\."/\ /g|awk '{print $1}')
+				sum=$[ $sum + $val2 ]
+			done
+			printf "$sum GB"
+			return 0
+			;;
+		sound)	val=$(lspci|grep -ie audio -ie sound)
+			if [[ ! -z "$val" ]] ; then
+				if [ ! "" = "$(echo $val|grep -i intel)" ]
+				then 	# Its intel
+					printf "Onboard"
+					return 0
+				else	printf "$val"
+				fi
+			else 	printf "No Audio"
+			fi
+			;;
+		distro)	known="mint ubuntu fedora debian redhat arch slackware"
+			for distro in $known;do
+				ls /etc/*|grep $distro > /dev/zero && \
+					break
+			done
+			[ -z $distro ] && \
+				printf "Distro Unknown" || \
+				printf "${distro^}"
+			grep -q [Rr]awhide /etc/system-release && \
+				printf " (Rawhide)"
+			return 0	;;
+		kernel)	uname -r
+			return 0	;;
+		de)	if [ -z $DESKTOP_SESSION ]
+			then 	printf "Please run on X server."
+			else 	session="${DESKTOP_SESSION##*/}"
+				printf "${session^}"
+			fi
+			return 0	;;
+		esac
+		if [ -z $search ] 
+		then 	echo "$1 $TASK_LIST"
+			return 0
+		else 	dmidecode -s "$search"
+			return 0
+		fi
+		return 1
+		echo $getinfo
+	}
+#
+#	Catching Arguments
+#
+	#[[ -z $1 ]] && printf "$help_text" && exit $RET_HELP
+	while getopts "f(fluent)pn(nobb)b(bbcode)d(default)c(colors)t:a(all)(long)s(short)(minimal)l:(label):v:(value):h:(help)": name
+	do 	case $name in
+		l|-label)
+			BB_COLOR_LABEL="$OPTARG"
+			COLOR_SET=true ;;
+		v|-value)
+			BB_COLOR_VALUE="$OPTARG"
+			COLOR_SET=true ;;
+		n|-nobb)
+			FORMAT="nobb"
+			;;
+		b|-bbcode)
+			FORMAT="bbcode"
+			;;
+		f|-fluent)
+			FORMAT="fluent"
+			;;
+		t)	T="$OPTARG"
+			;;
+		a|-all|-long)
+			STYLE="all"
+			doAuto=true
+			;;
+		s|-short|-minimal)
+			STYLE="short"
+			doAuto=true
+			;;
+		d|default)
+			STYLE="default"
+			doAuto=true
+			;;
+		h|help)
+			printf "$help_text"
+			exit $RET_HELP	;;
+		c|-colors)
+			tui-title "$TITLE ($script_version)"
+			tui-echo "Available Colors:"
+			COLORS=($fcolor)
+			MAX=${#COLORS[@]}
+			C=0 ; D=1 ; E=2
+			while [ $E -le $[ $MAX + 2 ] ];do
+				tui-echo "${COLORS[$C]}" "${COLORS[$D]}" "${COLORS[$E]}"
+				C=$[ $C + 3 ]
+				D=$[ $D + 3 ]
+				E=$[ $E + 3 ]
+			done
+			exit		;;
+		p)	GetInfo	
+			exit		;;
+		esac
+	done
+	shift $(($OPTIND - 1))
+	ARGS=(${*})
+	ARGS_COUNT=${#ARGS[@]}
+#
+#	Display & Action
+#
+	#echo $T ; exit
+	tui-title "$TITLE ($script_version)"
+	tui-echo "Welcome to the signature generator, might be also helpfull for troubleshoot info"
+	[ -z $FORMAT ] && \
+		tui-echo "Please select your output format:" && \
+		select FORMAT in $OUTPUT_FORMATS;do break;done
+	[ -z $STYLE ] && \
+		tui-echo "Please select your output values:" && \
+		select STYLE in $OUTPUT_STYLE;do break;done
+#
+#	Get output values
+#
+	case $STYLE in
+	default)
+		JOB_LIST="chassis device cpu ram distro de"
+		;;
+	short)
+		JOB_LIST="chassis cpu ram"
+		;;
+	all)
+		JOB_LIST="$(GetInfo)"
+		;;
+	custom|*)
+		tui-echo "Select the items you want to show:"
+		for item in $(GetInfo);do
+			tui-yesno "Add '$item' to list?" && \
+			JOB_LIST+=" $item"
+		done
+		if [ false = $COLOR_SET ] || [ $FORMAT = bbcode ]
+		then 	tui-echo "Please select a color for the 'label':"
+			select BB_COLOR_LABEL in $fcolor;do break;done
+			tui-echo "Please select a color for its 'value':"
+			select BB_COLOR_VALUE in $fcolor;do break;done
+		fi
+		;;
+	esac
+#
+#	Generating string
+#
+	if [ $FORMAT = fluent ]
+	then	echo TODO
+	else 	tui-echo "Generating outputstring..." "Please wait..."
+		for JOB in $JOB_LIST;do
+			tui-printf "Parsing $JOB..."	"[  $(tui-indi)   ]"
+			val="$(echo $(GetInfo $JOB))"
+			bb_lbl=""
+			case $JOB in
+			de|hdd|ram|[gc]pu)
+				lbl=${JOB^^}	;;
+			device)	lbl=${JOB^}
+				val=${val,,}
+				val=${val^}	;;
+			chassis)bb_lbl=$(Colorize $BB_COLOR_LABEL "$val")
+				bb_val=""
+				lbl="$val"
+				val=""		;;
+			*)	lbl=${JOB^}	;;
+			esac
+			[ -z $bb_lbl ] && \
+				bb_lbl=$(Colorize $BB_COLOR_LABEL "$lbl") && \
+				bb_val=$(Colorize $BB_COLOR_VALUE "$val") || \
+				bb_val=""
+			OUTPUT_noBB+="$T $lbl: $val"
+			OUTPUT_BB+="$T $bb_lbl: $bb_val"
+			OUTPUT_FLUENT=""
+		done
+		tui-status $? "Scanned all items."
+	fi
+#
+#	Print result
+#
+	tui-title "Your desired output: $FORMAT"
+	case $FORMAT in
+	bbcode|BB)	echo "${OUTPUT_BB:${#T}+1}"	;;
+	nobb|noBB) 	echo "${OUTPUT_noBB:${#T}+1}"	;;
+	# nobb)	echo	;;
+	esac

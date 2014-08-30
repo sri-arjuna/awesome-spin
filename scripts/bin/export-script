@@ -1,0 +1,19 @@
+#!/bin/bash
+SCRIPT="$HOME/exported-${1##*/}.sh"
+[ -z $1 ] && echo "Provide a [/path/to/]scriptname !" && exit 1
+cat "$1" > "$SCRIPT"
+
+for func in echo status printf header title
+do	echo "Change: $func"
+	sed s/tui-$func/echo/g -i "$SCRIPT"
+done
+
+echo "Change press"
+sed s/tui-press/"read -p 'Press [ENTER] to continue...'"/g -i "$SCRIPT"
+
+echo
+echo "	Starting exported script..."
+echo "	* $SCRIPT"
+echo
+sleep 1
+sh "$SCRIPT"

@@ -11,15 +11,22 @@
 #
 #	Variables Fixed (external)
 #
-	. ./make-iso.conf
+	ofs="$IFS"
+	IFS="\\$(printf '\076')"
+	tDIR=$(ls -l "$0" | while read tmp link;do printf $(dirname "${link:1}");done)
+#echo $tDIR
+#exit
+	. $tDIR/make-iso.conf
 	. /etc/os-release 
 
 	usr=${home##*/}
 	CFG=$SRC_DIR/$prj.ks
 	if $make32
-	then	pre="setarch i686"
+	then	pre="time $(which setarch) linux32"
+		pre="$(which setarch) i686"
+		#pre="setarch i686"
 		ARCH=32
-	else	pre=""
+	else	pre="time"
 		ARCH=64
 	fi
 #
@@ -54,12 +61,24 @@
 	clear
 	
 	printf "\n\n\tStart building \"$TITLE\"...\n\n"
-	sleep 2
+	sleep 1.5
 	cd "$SRC_DIR"
 	
-	
-	time $pre livecd-creator -c "$CFG" -t "$TITLE" -f "$FSLABEL" --releasever=$RELEASEVER --tmpdir="$TMPDIR" $VERBOSE
-	RET=$?
+#	if $make32 && [ x86_64 = "" ] 
+#	then	#setarch linux32
+		#echo "---- $(uname -a)"
+		#time setarch linux32 livecd-creator -c "$CFG" -t "$TITLE" -f "$FSLABEL" --releasever=$RELEASEVER --tmpdir="$TMPDIR" $VERBOSE
+		cmd="$pre livecd-creator -c \"$CFG\" -t \"$TITLE\" -f \"$FSLABEL\" --releasever=$RELEASEVER --tmpdir=\"$TMPDIR\" $VERBOSE"
+		#echo	$cmd
+		#exit
+		eval $cmd
+		RET=$?
+		#echo;	; exit
+		#setarch linux64
+		#echo "---- $(uname -a)"
+#	else	time livecd-creator -c "$CFG" -t "$TITLE" -f "$FSLABEL" --releasever=$RELEASEVER --tmpdir="$TMPDIR" $VERBOSE
+#		RET=$?
+#	fi
 	
 	printf "\n\n"
 	if [[ 0 -eq $RET ]]

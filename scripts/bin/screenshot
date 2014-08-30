@@ -1,0 +1,84 @@
+#!/bin/bash
+#
+#	sea's Script Tools: The 3rd Generation
+#	File Description:	Creates a screenshot with ImageMagick and Zenity
+	script_version=0.8
+#	Author:             Simon A. Erat (sea) <erat.simon AT gmail.com>
+#	Created (y.m.d):    2011.08.19
+#	Changed:            2013.08.25
+#	License:            GPL v3   
+#
+#	Title
+#
+#	source tui
+	source $HOME/.config/user-dirs.dirs
+	tui-title "sea's lxscreenshot, using ImageMagick ($script_version)"
+#
+#	Variables
+#
+	mode=instant
+	reqs=""
+	imp=$(which import) 2>&1
+	zen=$(which zenity) 2>&1
+	[ "" = "$imp" ] && reqs+=" ImageMagick"
+	[ "" = "$zen" ] && reqs+=" zenity"
+	[ ! "" = "$reqs" ] && \
+		tui-echo "Missing required applications:" "$reqs" && \
+		yum install -y $reqs
+	imp=$(which import) 2>&1
+	zen=$(which zenity) 2>&1
+	oldir=$(pwd)
+	tDestination="$XDG_PICTURES_DIR/Screenshots"
+	msgA="Enter the filename for the image, it will be save in $tDestination"
+#
+#	One Liners
+#
+	tui-bol-dir "$tDestination"
+	[ "-h" = "$1" ] && \
+		echo -e "$(basename $0) ($script_version)
+		\rUsage:\t$(basename $0) FILENAME[.EXT] [options]
+		\rWhere options are:
+		\r\t-a\tMark an area
+		\r\t-h\tThis screen
+		\rWhere EXT maybe:
+		\r\t * bmp
+		\r\t * gif
+		\r\t * jpg (default)
+		\r\t * png
+		\r" && exit 99
+#
+#	Handle Arguments
+#
+	if [ ! -z $1 ]		# enter parameter for lazy mode ;)
+	then 	tFileName=$1
+	else 	tFileName="$(zenity --entry --text=$msgA)"
+		[ "" = "$(echo $tFileName)" ] && return 1
+	fi
+	
+	for arg in $@;do
+		case "$arg" in
+		"-a")	mode=area	;;
+		*)	tFileName="$arg";;
+		esac
+	done
+	[ "" = "$(echo $tFileName)" ] && \
+		tFileName="$(zenity --entry --text=$msgA)"
+	[ "" = "$(echo $tFileName)" ] && \
+		ReportStatus 1 "Must provide a filename " && \
+		exit 1
+	[ "" = "$(echo $tFileName|grep \.)" ] && \
+		tFileName+=".jpg"
+		
+	case $mode in
+	area)		echo "Please mark the area for the screenshot with your cursor. Press-hold-draw-release."
+			opts="-delay 3"
+			;;
+	instant)	opts="-window root"
+			;;
+	esac
+#
+#	Action ! ^^
+#
+	$imp $opts $tOptions $tDestination/$tFileName && \
+		tui-status $? "Done Screenshot, saved to file: $tDestination/$tFileName" || \
+		tui-status $? "Missing ImageMagick, or other failure."

@@ -1,0 +1,27 @@
+#!/bin/bash
+#	Compile file from arg
+#	Extension of: http://www.unix.com/os-x-apple-/246397-creating-executable-fly-post302898214.html
+#
+#	Variables
+#
+	src=/tmp/example.c				# Set default src file as example
+#
+#	Action
+#
+	if [ -z $1 ]					# No arg (codefile) is passed
+	then 	touch $src				# Create empty file
+		echo '/* Embed a C script and compile on the fly. */
+#include<stdio.h>
+main()
+{
+    printf("A simple text line as a test...\n");
+}' 		> $src					# Redirect it to default src file
+	else	# Check if it is in current path or somewhere else
+		[ -f "$(pwd)/$1" ] && \
+			src="./$1" || src="$1"		# Set var 'src' to passed argument
+	fi
+	out="${src/.c$/}"				# Remove '.c' extension for the outputfile
+	echo -e "Compiling \"${src##*/}\" to $out..."		
+	gcc "$src" -o "$out" || exit 1			# If build fails exit with failure  -- scratch that, doesnt work  with 'spaced' path names :(
+	"$out"						# Execute it, `"` if passed subfolders contain spaces
+	exit 0						# Return successfully

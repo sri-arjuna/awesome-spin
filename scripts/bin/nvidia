@@ -1,0 +1,154 @@
+#!/bin/bash
+#	Installs nVidia graphic drivers according to Leigh's guide at:
+#	http://forums.fedoraforum.org/showthread.php?t=280750
+#
+#	Script by sea, 2014.04.04
+#
+#	Variables
+#
+	script_version=0.3
+	[ ! 0 -eq $UID ] && echo "Requires root access!" && exit 1
+	export LC_ALL=C
+	ME=${0##*/}
+	alias yum="yum -y"
+	reboot() { # [ TIMEOUT=30 ]
+	# Informs the user that the system will reboot in 30/TIMEOUT seconds
+	#
+		[ -z $1 ] && timeout=30 || timeout=$1
+		read -t $timeout -p "Rebooting in $timeout seconds, press [CTRL+C] to abort or [ENTER] to reboot now...."
+		echo "Rebooting now..."
+		sleep 0.5
+		$(which reboot)
+	}
+#
+#	Arguments
+#
+	for ARG in $@;do
+		case $ARG in
+		debug)		clear;clear
+	
+				echo 
+				echo "Debug - $ME ($script_version)"
+	
+				printf "\n--- System:\t$(uname -r) ---\n"
+	
+				echo
+				echo "--- Installed nvidia/kernel packages: ---"
+				rpm -qa *\nvidia\*  *\kernel\*|sort
+	
+				echo
+				echo "--- Mod info on: nouveau/nvidia ---"
+				lsmod |grep -e nvidia -e nouveau
+	
+				echo
+				echo "--- Xorg info ---"
+				cat /etc/X11/xorg.conf
+				echo "--- PCI info ---"
+				lspci |grep VGA
+	
+				echo
+				echo
+				echo "--- --- Print additional info: --- ---"
+	
+				echo
+				for str in nouv nvi vga " err";do echo "--- $str ---";dmesg|grep -i "$str";done
+	
+				echo
+				echo "--- /etc/X11/xorg.conf.xorg-x11-drv-nvidia_uninstalled  ---"
+				cat /etc/X11/xorg.conf.xorg-x11-drv-nvidia_uninstalled 
+	
+				LAST=$(sudo yum history list|grep ID -A2 |grep -v "\---"|grep -v ^I|awk '{print $1}')
+				echo
+				echo "--- Last (ID=$LAST) yum action (install & erease): ---"
+				sudo yum history info $LAST|grep -e Er -e In |grep -v Installed # |grep -ve In -e \ rpm -e yum
+	
+				echo
+				echo "--- Current kernel related content of /boot ---"
+				ls /boot|grep ^i |grep $(uname -r)
+				exit 0
+			;;
+		remove)		yum erase *\nvidia\*
+				cd /boot
+				mv initramfs-$(uname -r).img initramfs-$(uname -r)-nvidia-$(date +'%Y.%m.%d').img
+				[ -f initramfs-$(uname -r)-nouveau.img ] && \
+					mv initramfs-$(uname -r)-nouveau.img initramfs-$(uname -r).img || \
+					dracut /boot/initramfs-$(uname -r).img $(uname -r)
+				reboot 10
+			;;
+		-h|help)	printf "\n$ME ($script_version)
+Usage:	$ME [debug] [remove] [help]
+	$ME		Install nVidia drivers
+	$ME debug 	Prints information to help debug
+	$ME remove	Removes *nvidia* from your installations
+\n"
+			exit $RET_HELP
+			;;
+		esac
+	done
+#
+#	Action
+#
+	yum list installed | grep PAE && isPAE=true || isPAE=false
+	if [ ! -f /.$ME-second ];then
+		echo "Update kernel & selinux..."
+		yum update kernel\* selinux-policy\*
+		$isPAE && yum install kernel-PAE-devel
+		echo "Install rpmfusion... "
+		yum --nogpgcheck install  http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-stable.noarch.rpm \
+					http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-stable.noarch.rpm
+		
+		printf "\nIf you already had booted into the latest kernel, and no selinux-policy updates where required,
+			\ryou may abort the reboot now, and restart the script.\n"
+		touch /.$ME-second
+		reboot 20
+	else
+		echo "Please select which mod handler you want to use:"
+		echo "Akmod us the non-free release, with less interactions required."
+		echo "kmod is the offical mod handler, with more interactions requried."
+		select MOD in akmod kmod;do break;done
+
+		arch=".i686"	# Just added to match Leigh's guide...
+				# On my x86_64 install it didnt seem required though
+		echo "Please choose what kind of graphic card you have:"
+		printf "*	GeForce89-200-700 	GeForces 8 & 9, and models range 200-700
+		    \r*	GeForce67 	 	GeForces 6 & 7
+		    \r*	FX			GeForce FX models
+		    \r"
+		select CARD in GeForce89-200-700 GeForce67 FX;do
+		case $CARD in
+		GeForce89-200-700)
+				DRV="kmod-nvidia xorg-x11-drv-nvidia-libs$arch"	;;
+		GeForce67)	DRV="kmod-nvidia-304xx xorg-x11-drv-nvidia-304xx-libs$arch"	;;
+		FX)		DRV="kmod-nvidia-173xx xorg-x11-drv-nvidia-173xx-libs$arch"	;;
+		esac
+		break
+		done
+
+	# Add leading 'a' to akmod if applicable
+		if [ $MOD = akmod ]
+		then 	DRV=$(echo $DRV|sed s/^kmod/akmod/g)
+		fi
+
+	# Append -PAE to kernel updates
+		if [ true = $isPAE ]
+		then 	echo "PAE found:"
+			DRV=$(echo $DRV|sed s/\ xorg/"-PAE xorg"/g)
+		fi
+
+		yum install $DRV
+		[ -f /.$ME-second ] && rm -f /.$ME-second
+	fi
+
+	# Leigh said this is not required for Fedora 20 or later
+	if [ ! $(cat /etc/system-release|awk '{print $3}') -ge 20 ]
+	then 	mv /boot/initramfs-$(uname -r).img /boot/initramfs-$(uname -r)-nouveau.img
+		dracut /boot/initramfs-$(uname -r).img $(uname -r)
+	else	echo
+		echo "Leigh said its not required for F20+"
+		read -n1 -p "Do you want to rebuild initramfs anyway? (y/n) :" ANSWER
+		if [ "$ANSWER" = "y" ]
+		then 	mv /boot/initramfs-$(uname -r).img /boot/initramfs-$(uname -r)-nouveau.img
+			dracut /boot/initramfs-$(uname -r).img $(uname -r)
+		fi
+	fi
+	reboot 45

@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+#	Pings a random URL
+#
+#
+#	Variables
+#
+	unset URLS[@]
+	URLS=(google.com facebook.com redhat.com linux.org fedoraproject.org debian.org mint.org ubuntu.com )
+	MAX=$(echo ${URLS[@]}|wc|awk '{print $2}')
+	URL=${URLS[$(rnd $MAX)]}
+#
+#	Action
+#
+	printf "\nPinging $URL... \n"
+	ping -c1 $URL | grep -e trans -e ms

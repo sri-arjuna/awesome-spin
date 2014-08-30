@@ -1,0 +1,2 @@
+Do NOT execute the scripts on your live system!
+They are executed from within %post section during the iso build.

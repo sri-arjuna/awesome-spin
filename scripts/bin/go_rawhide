@@ -1,0 +1,23 @@
+#!/bin/bash
+#	Upgrades your system to rawhide.
+#	Rawhide is the unstable stage, before beta begins.
+#	-> MUST RUN BEFORE 3rd repos (applications from it) are installed! <--
+#
+#	Variables
+#
+	[ ! 0 -eq $UID ] && echo "Requires root access!" && exit 1
+	REPOS=""
+#
+#	Prepare
+#
+	yum install -y fedora-release-rawhide yum-utils
+	cd /etc/yum.repos.d
+	for R in *;do REPOS+=" $R";done
+	yum-config-manager --disable ${REPOS}
+	yum-config-manager --enable rawhide 
+	yum update -y yum
+#
+#	Upgrade
+#
+	[ -z $XDG_VTNR ] || echo "Must run without X-server running!"
+	yum -y --releasever=rawhide distro-sync --nogpgcheck --skip-broken

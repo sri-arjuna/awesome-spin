@@ -1,5 +1,6 @@
 %post
 # FIXME: it'd be better to get this installed from a package
+tui-header "FIXME - part... ?"
 cat > /etc/rc.d/init.d/livesys << EOF
 #!/bin/bash
 #
@@ -156,7 +157,9 @@ touch /.liveimg-configured
 
 # add static hostname to work around xauth bug
 # https://bugzilla.redhat.com/show_bug.cgi?id=679486
-echo "localhost" > /etc/hostname
+if [ -e /etc/hostname ] && [ ! -s /etc/hostname ]; then
+ echo "localhost" > /etc/hostname
+fi
 
 EOF
 

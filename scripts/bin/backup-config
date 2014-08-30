@@ -1,0 +1,18 @@
+#!/bin/bash
+unset ARRAY
+OLD=$(pwd)
+C=0
+cd $HOME
+for D in $(ls -d .*);do
+ 	[ ! "." = "$D" ] && \
+ 		[ ! ".." = "$D" ] && \
+ 		ARRAY[$C]="$D" && \
+ 		((C++))
+done
+
+tar --exclude-backups \
+	--exclude-caches-all \
+	-acf \
+	$(date +'%F')-$USER-config.tar.gz \
+	"${ARRAY[@]}"
+cd "$OLD"
