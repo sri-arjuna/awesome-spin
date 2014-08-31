@@ -29,6 +29,7 @@ If you are running Linux, Unix or BSD version, simply use dd,
 as in: `dd file.iso /dev/sdu`
 
 
+
 Build Instruction
 -----------------
 
@@ -38,14 +39,14 @@ You can keep that, or change 'prj=' to whatever path applies to you:
 	prj=$HOME/prjs/iso-awesome-sea
 	git clone git://git.code.sf.net/p/awesomewmspin/code $prj
 	#git clone https://github.com/sri-arjuna/awesome-spin.git $prj
-	sudo ln -s $prj/make-iso.sh /usr/bin/make-awesome
+	sudo ln -s $prj/make-iso.sh /usr/bin/make-awesomewm
 
 
 Now edit the make-iso.conf in the $prj directory, so that the paths match your system. 
 
 When done, simply type as regular user
 
-		sudo make-awesome
+		sudo make-awesomewm
 
 and enjoy the new iso in your $HOME directory.
 (Note, if run as root (as in: not with sudo), the iso will be in root's home dir)

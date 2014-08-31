@@ -1,6 +1,27 @@
-License:	GPLv3
+#!/bin/bash
+# ------------------------------------------------------------------------
+#
+# Copyright (c) 2014 by Simon Arjuna Erat (sea)  <erat.simon@gmail.com>
+# All rights reserved.
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+#
+# ------------------------------------------------------------------------
+License:	GPLv3, on scripts and kickstart files used to create the iso.
 Created:	2013.09.02
-Author: 	Simon A. Erat, sea@fedorapeople.org
+Changed:	2014.08.31
+Author: 	Simon A. Erat, erat.simon@gmail.com
 
 
 Changed defaults for new users
@@ -13,10 +34,13 @@ Effected:
 Default XDG dirs gives you this new structure:
 ----------------------------------------------
 $HOME/
-  + media/ 	(img, snd, vids)
+  + data/
+  + mm/ 	(pics, snd, vids)
   + net/	(dls, fas, pub, web)
-  + notepad
-  + priv/	(cloud, docs, prjs, templates)
+  + notepad	"former desktop"
+  + priv/	(cloud, docs, templates)
+  + prjs/
+
 According to this, there have been placed links in ~/.gtk-bookmarks
 Mounts: /mnt
 Notepad: $HOME/notepad
@@ -27,10 +51,13 @@ Personal: $HOME/priv
 
 New shell prompt PS1
 --------------------
-The new PS1 will look like (human-readable-syntax):
-returnedvalue fullpath promptsymbol
-Where promptsymbol is $ for users and # for root.
-Where returnedvalue is explained below
-For successfully executed shellcommands, the prompt will display either one of: '+' ':)' '✔'
-For failed shellcommands, the prompt will display either one of: '-' ':(' '✘'
-Other exit status' will be reported by number
+The new PS1 will look like (human-readable-syntax):	Returned_Value    Full_Path    Prompt_Symbol
+
+Where Prompt_Symbol is
+* '$' (white bg, blue font) for users
+* '#' (red bg, white font) for root.
+
+Where Returned_Value is:
+* For successfull shellcommands, the prompt will display either one of: '+' ':)' '✔', colored green bg
+* For failed shellcommands, the prompt will display either one of: '-' ':(' '✘', colored red bg
+* Other exit status' will be reported by number, colored white bg

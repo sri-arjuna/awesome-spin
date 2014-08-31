@@ -2,9 +2,9 @@ timezone Europe/Zurich --nontp
 lang de_CH.UTF-8
 keyboard sg
 
-#lang en_US.UTF-8
-#keyboard us
-#timezone US/Eastern
+##lang en_US.UTF-8
+##keyboard us
+##timezone US/Eastern
 
 
 auth --useshadow --enablemd5

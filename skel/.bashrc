@@ -21,7 +21,8 @@
 	alias lla="ls -la"
 	alias la="ls -a"
 	alias blame-log="blame >> $HOME/data/blame.log;cat $HOME/data/blame.log"
-	alias ps="ps -hux"
+	alias uptime="uptime >> $HOME/data/uptime.log;tail $HOME/data/uptime.log"
+	alias psy="ps -hux"
 	alias topy="top -o RES -csn 1"
 	alias gupd="sudo grub2-mkconfig \
 		-o $( [ -f /boot/grub2/grub.cfg ] && \
@@ -40,4 +41,3 @@
 #	which sutra 1>/dev/zero 2>/dev/zero && \
 #		sutra || echo "Namaste, $USER :)"
 sh $HOME/.config/autostart/first.sh
-sh $HOME/.config/autostart/first-boot.sh

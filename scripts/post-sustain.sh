@@ -5,7 +5,7 @@
 #	* prepare symlink
 #	* sed scripts
 #
-	# S for search
+	# S for search, since sea created them in the first place, I have to look for me ;)
 	S="/home/sea/prjs/iso-awesome-sea"
 	R="/root/spin_files"
 	ln -s $R/make-iso /usr/bin/make-awesomewm

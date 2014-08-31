@@ -15,7 +15,7 @@ cat > /etc/xdg/libfm/pref-apps.conf << FOE
 [Preferred Applications]
 WebBrowser=firefox.desktop
 MailClient=thunderbird.desktop
-Editor=gedit.desktop
+#Editor=gedit.desktop
 FOE
 
 	echo "SED'ing lxdm.conf"

@@ -16,6 +16,6 @@ XDG_WEB_DIR="$HOME/net/web"
 XDG_FAS_DIR="$HOME/net/fas"
 XDG_PUBLICSHARE_DIR="$HOME/net/pub"
 XDG_MUSIC_DIR="$HOME/mm/snd"
-XDG_VIDEOS_DIR="$HOME/mm/vid"
-XDG_PICTURES_DIR="$HOME/mm/pic"
+XDG_VIDEOS_DIR="$HOME/mm/vids"
+XDG_PICTURES_DIR="$HOME/mm/pics"
 

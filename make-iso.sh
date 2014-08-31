@@ -22,8 +22,8 @@
 	usr=${home##*/}
 	CFG=$SRC_DIR/$prj.ks
 	if $make32
-	then	pre="time $(which setarch) linux32"
-		pre="$(which setarch) i686"
+	then	pre="time setarch linux32"
+		#pre="$(which setarch) i686"
 		#pre="setarch i686"
 		ARCH=32
 	else	pre="time"
