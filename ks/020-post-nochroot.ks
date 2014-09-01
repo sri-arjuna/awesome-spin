@@ -32,14 +32,22 @@
 #
 #	Retrieve 'my stuff'
 #
-	git clone $URL/tui.git 			$root/tmp/tui
+	#git clone $URL/tui.git 			$root/tmp/tui
 	sleep 1
 	git clone $URL/tui-sutra.git 		$root/usr/share/sutra
+	git clone $URL/vhs.git			$root/usr/share/vhs
+	#git clone $URL/vhs.git			$root/usr/share/nas
+	#git clone $URL/efi-helper.git		$root/usr/share/efi-helper
+	cd "$root/usr/bin"
+	ln -s /usr/share/vhs/vhs.sh		vhs
+	#ln -s /usr/share/nas/nas.sh		nas
+	#ln -s /usr/share/efi-helper/efi-helper.sh	efi-helper
+	cd "$prjs"
 #
 #	User Configuration (/etc/skel)
 #
 	skel=$root/etc/skel
 	sleep 1
 	git clone $URL/awesome-config.git 	$skel/.config/awesome
-	git clone $URL/awesome-config.git 	$root/tmp/awesome
+	#git clone $URL/awesome-config.git 	$root/tmp/awesome
 %end

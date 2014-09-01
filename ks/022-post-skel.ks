@@ -2,7 +2,7 @@
 #!/bin/bash
 	cd /root/spin_files/scripts
 	sh skel-config.sh
-	sh skel-awesome.sh
+#	sh skel-awesome.sh
 	sh post-livesys.sh
 #
 # 	This goes at the end after all other changes.

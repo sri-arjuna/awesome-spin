@@ -38,8 +38,9 @@ You can keep that, or change 'prj=' to whatever path applies to you:
 
 	prj=$HOME/prjs/iso-awesome-sea
 	git clone git://git.code.sf.net/p/awesomewmspin/code $prj
-	#git clone https://github.com/sri-arjuna/awesome-spin.git $prj
+	sed s,"/sea","/$USER",g -i $prj/make-iso.sh
 	sudo ln -s $prj/make-iso.sh /usr/bin/make-awesomewm
+	make-awesomewm [rawhide]
 
 
 Now edit the make-iso.conf in the $prj directory, so that the paths match your system. 

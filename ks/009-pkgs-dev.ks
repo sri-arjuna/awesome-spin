@@ -8,7 +8,14 @@
 	@fedora-packager
 	gcc
 	git
-	#rpmlint git rpmdevtools rpm-build koji koji-builder mock auto-buildrequires
+	rpmlint 
+	rpmdevtools 
+	rpm-build 
+	koji
+	koji-builder
+	mock
+	auto-buildrequires
 	livecd-tools
 	spin-kickstarts
+	createrepo
 %end

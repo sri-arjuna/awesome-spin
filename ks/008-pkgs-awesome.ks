@@ -20,14 +20,14 @@
 	abiword
 	filezilla
 	firefox
-	gedit
+	pluma
 	gnumeric
 	gpicview
-	gtk-recordmydesktop
+	#gtk-recordmydesktop
 	lxterminal
 	mtpaint
 	pcmanfm
-	recordmydesktop
+	#recordmydesktop
 	rhythmbox
 	thunderbird
 	totem
