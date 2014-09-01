@@ -6,6 +6,7 @@
 #	To install
 #
 	@fedora-packager
+	fas
 	gcc
 	git
 	rpmlint 
