@@ -1,0 +1,383 @@
+#!/bin/bash
+#
+#	Downloads the offical website offering download links
+#	Parses it and lets you easy download select among the list.	
+#			
+	script_version=0.10
+#	License:	GPL v3
+#	Created:	2013.05.16
+#	Changed:	2013.08.27
+#	Author: 	Simon A. Erat (sea) <erat.simon AT gmail.com>
+#	Resource:	http://forums.fedoraforum.org/showthread.php?t=291174
+#
+#
+#	Title
+#
+	tui-title "sea's Fedora ISO Download handler ($script_version)"
+#
+#	Vars
+#
+	needHelp=false
+	[ -z $XDG_DOWNLOAD_DIR ] && XDG_DOWNLOAD_DIR=$HOME/Downloads
+	[ -z $SEA_CACHE_DIR ] && export SEA_CACHE_DIR=/usr/tmp
+	[ ! -d "$SEA_CACHE_DIR" ] && mkdir -p "$SEA_CACHE_DIR" 
+	OUTFILE=$SEA_CACHE_DIR/dl-fedora ; OUTFILEb=$OUTFILE.b
+	FED_DL=""
+	FED_NIGHT=http://alt.fedoraproject.org/pub/alt/nightly-composes/
+	FED_GET=http://fedoraproject.org/get-fedora-options
+	FED_PRE=http://fedoraproject.org/get-prerelease
+	FED_RESPIN=https://dl.fedoraproject.org/pub/alt/live-respins/
+	FED_SPIN=https://dl.fedoraproject.org/pub/alt/releases/
+	FED_RAW=https://dl.fedoraproject.org/pub/alt/stage/
+	FED_VER=$(cat /etc/fedora-release|awk '{print $3}')
+	unset ISO_FOUND[@] ISO_FILE[@] ; C=0 ; mode=""
+	for f in "$OUTFILE" "$OUTFILEb";do [ -f "$f" ] && rm -f "$f" ; touch "$f";done
+	for a in $@;do
+		[ "-night" = "$a" ] 	&& mode=night 	&& FED_DL="$FED_NIGHT"
+		[ "-nightly" = "$a" ] 	&& mode=night 	&& FED_DL="$FED_NIGHT"
+		[ "-get" = "$a" ] 	&& mode=get 	&& FED_DL="$FED_GET"
+		[ "-spin" = "$a" ] 	&& mode=spin 	&& FED_DL="$FED_SPIN"
+		[ "-respin" = "$a" ] 	&& mode=respin 	&& FED_DL="$FED_RESPIN"
+		[ "-pre" = "$a" ] 	&& mode=pre 	&& FED_DL="$FED_PRE"
+		[ "-raw" = "$a" ] 	&& mode=raw 	&& FED_DL="$FED_RAW"
+		[ "-h" = "${a:0:2}" ] 	&& needHelp=true
+		[ "-?" = "${a:0:2}" ] 	&& needHelp=true
+	done
+	
+	thisHelp="st net dl-fed ($script_version)
+		\rỤsage: dl-fed [options]
+		\r\t-h\tDisplays this screen
+		\r\t-get\tChoose iso from current release
+		\r\t-spin\tChoose among latest 3 release to choose the first livespin
+		\r\t-respin\tChoose among current spins that had been updated
+		\r\t-night[ly]\tChoose from the most recent spins, built last night
+
+		\rOnly working during rawhide stages!
+		\r\t-pre\tChoose iso from prelease
+		\r\t-raw\tChoose iso from existing stages (Alpha - Release Candidate)
+		
+		\rNOTE:\tReleases, Spins, Rawhide and Pre-Preleases should work,
+		\r\thowever, for Respins the retrieving of the CHECKSUM file fails.
+		\r\tAt every download location this script will try to find a CHECKSUM file.
+		\r\tIf it can retrieve one, it will try to verify the downloaded ISO
+		\r\tIf it can not retrieve one, it will report FAIL or segmention fault.
+		\r\tThe CHECKSUM files are not GPG checked before the hashkeys are used!
+		"
+#
+#	Subs
+#
+	dlfed_get_arch() { # URL
+	# Retrieves available architecture folders 
+	# from provided URL
+		unset arch[@]
+		wget -q -O "$OUTFILE" "$1"
+		
+		grep 86 "$OUTFILE"|awk '{print $2}' > "$OUTFILEb"
+		while read line;do
+			tmp="${line:6}"
+			thisChar="${line:0:1}"
+			I=0
+			while [ ! $thisChar = "\"" ];do
+				thisChar="${tmp:$I:1}"
+				((I++))
+			done
+			I=$[ $I - 1 ]
+			tmp="${tmp:0:$I}"
+			arch[$C]="$tmp" ; ((C++))
+		done < "$OUTFILEb"
+		
+		select ARCH in ${arch[@]};do break;done
+		
+		echo $ARCH
+		rm -f "$OUTFILE"
+	}
+	dlfed_get_version() { # URL
+	# Retrieves Fedora Release Version Numbers
+	# from provided URL
+		unset version[@]
+		wget -q -O "$OUTFILE" "$1"
+		grep [0-9] "$OUTFILE"|awk '{print $2}' > "$OUTFILEb"
+		
+		while read line;do version[$C]="${line:6:2}" ; ((C++));done < "$OUTFILEb"
+		select VERSION in ${version[@]};do break;done
+		
+		echo $VERSION
+		rm -f "$OUTFILE"
+	}
+	dlfed_get_live() { # URL
+	# Checks if url provides a folder named Live
+	# from provided URL
+		unset version[@]
+		wget -q -O "$OUTFILE" "$1" #> /dev/zero
+		
+		[ "" = "$(echo $(grep Live $OUTFILE))" ] && \
+			retval=1 || retval=0
+		
+		rm -f "$OUTFILE"
+		return $retval
+	}
+	dlfed_get_checksum() { # URL
+	# Retrieves Fedora Checksum if available
+	# from provided URL
+		[ -z $OUTFILE ] && OUTFILE=$SEA_CACHE_DIR/dl-fedora
+		[ -z $XDG_DOWNLOAD_DIR ] && XDG_DOWNLOAD_DIR=$HOME/Downloads
+		wget -q -K "$1" -O "$OUTFILE"
+		
+		thisCS=$(grep CHECKSUM "$OUTFILE" | awk '{print $2}')
+		if [ "" = "$(echo $thisCS)" ] 
+		then	tui-status 1 "No Checksum file found" 
+			return 1
+		elif [ ! "F" = "${thisCS:6:1}" ]
+		then	thisCS=$(grep CHECKSUM "$OUTFILE" | awk '{print $6}')
+		fi
+		
+		thisCS="${thisCS:6}"
+		echo "$thisCS" > "$OUTFILE"
+		
+		sed s/"\""/" "/g -i "$OUTFILE"
+		thisCS=$(cat "$OUTFILE" | awk '{print $1}' )
+		
+		wget -q -k -c --progress=bar:force "$1/$thisCS" -O "$XDG_DOWNLOAD_DIR/$thisCS"
+		echo "$XDG_DOWNLOAD_DIR/$thisCS"
+		rm -f "$OUTFILE"
+	}
+#
+#	Show menu or not?
+#
+	sudo tui-install wget
+	[ $needHelp = true ] && echo -e "$thisHelp" && exit 1
+	if [ "" = "$FED_DL" ] 
+	then	tui-echo "Please select what you want to download:" # dont work yet:: 
+		select a in Nightly Releases Pre-Releases Spins Re-Spins Rawhide ;do 
+		[ "Nightly" = "$a" ] && mode=night && FED_DL="$FED_NIGHT"
+		[ "Releases" = "$a" ] && mode=get && FED_DL="$FED_GET"
+		[ "Pre-Releases" = "$a" ] && mode=pre && FED_DL="$FED_PRE"
+		[ "Rawhide" = "$a" ] && mode=raw && FED_DL="$FED_RAW"
+		[ "Re-Spins" = "$a" ] && mode=respin && FED_DL="$FED_RESPIN"
+		[ "Spins" = "$a" ] && mode=spin && FED_DL="$FED_SPIN"
+		break;done
+	else	FED_SEL=$FED_VER
+	fi
+#
+#	Get raw data 
+#
+	case $mode in
+	"night"|"nightly")
+		tui-title " !!! THIS nightly IS BETA !!! "
+		tui-printf "Downloading index of $FED_DL" "$PROGRESS"
+		wget -q -K $FED_DL -O "$OUTFILE" --progress=bar
+		tui-status $? "Downloaded index"
+		
+		tui-printf "Parsing index..." "$WORK"
+		tmp="$(grep "class=\"spin" "$OUTFILE"|sed s,[\<,\>],\ ,g|sed s,t[d,r],\ ,g|sed s,"class=\"spin\"",\ ,g|sed s,\ [/,a,]\ ,\ ,g|sed s,\",\ ,g| awk '{print $2" "$3" "$7}')"
+		echo "$tmp" > "$OUTFILE"
+		
+		nArchs=$(grep 86 "$OUTFILE"|awk '{print $2}')
+		nArch=""
+		for n in $nArchs;do [ "" = "$(echo $nArch|grep $n)" ] && nArch+=" $n";done
+		
+		nSpins=$(grep ht "$OUTFILE"|awk '{print $1}')
+		nSpin=""
+		for n in $nSpins;do [ "" = "$(echo $nSpin|grep $n)" ] && nSpin+=" $n";done
+		
+		tui-echo "Select which spin you want to download:"
+		select spin in $nSpin;do break;done
+		
+		tui-echo "Select which arch should be downloaded"
+		select arch in $nArch;do break;done
+		
+		tui-printf "Downloading info page of $spin" "$WORK"
+		wget -q -K $(grep $arch "$OUTFILE"|grep $spin|awk '{print $3}') -O "$OUTFILE" --progress=bar
+		;;
+	"get"|"pre")		
+		tui-printf "Downloading index of $FED_DL" "$PROGRESS"
+		wget -q -K $FED_DL -O "$OUTFILE" --progress=bar
+		tui-status $? "Downloaded index"
+		;;
+	spin|respin)	
+		if [ $mode = spin ]
+		then	tui-echo "Please select which version you want:" "NOTE: the lowest might not work!"
+			pre="$FED_DL"
+			SPINVER=$(dlfed_get_version "$pre")
+			add="$SPINVER/Spins"
+			
+			tui-echo "Please select your prefered architecture:"
+			ARCH=$(dlfed_get_arch "$pre$add") > /dev/zero
+			FED_DL="$pre$add/$ARCH/"
+		fi
+		
+		tui-printf "Downloading index of $FED_DL" "$PROGRESS"
+		wget -q -K $FED_DL -O "$OUTFILE" --progress=bar
+		tui-status $? "Downloaded index"
+		
+		grep href "$OUTFILE"| grep .iso|awk '{print $2}'  > "$OUTFILEb" && \
+		rm -f "$OUTFILE" ; touch "$OUTFILE"
+		;;
+	raw)
+		tui-printf "Downloading index of $FED_DL" "$PROGRESS"
+		wget -q -K $FED_DL -O "$OUTFILE" --progress=bar
+		tui-status $? "Downloaded index"
+		
+		grep href "$OUTFILE"|grep -v pre|grep -v PAR|grep -v delta|awk '{print $2}' > "$OUTFILEb" && \
+		rm -f "$OUTFILE" ; touch "$OUTFILE"
+		
+		while read line;do
+			tmp="${line:6}"
+			thisChar="${line:0:1}"
+			I=0
+			while [ ! $thisChar = "\"" ];do
+				thisChar="${tmp:$I:1}"
+				((I++))
+			done
+			I=$[ $I - 1 ]
+			tmp="${tmp:0:$I}"
+			ISO_FILE[$C]="$tmp"
+			ISO_FOUND[$C]="$tmp" ; ((C++))
+		done < "$OUTFILEb"
+		
+		tui-echo "Please select which stage you want to try:"
+		select stage in ${ISO_FILE[@]};do break;done
+		rm -f "$OUTFILE" "$OUTFILEb"
+		
+		
+		if dlfed_get_live "$FED_DL$stage"
+		then	if tui-yesno "Do you want to download rawhide livemedia?" 
+			then	FED_DL="$FED_DL${stage}Spins/"
+				doInst=false
+			else	FED_DL="$FED_DL${stage}Fedora/"
+				doInst=true
+			fi
+		else	FED_DL="$FED_DL$stage/Fedora/"
+			doInst=true
+		fi
+		
+		tui-echo "Please select your prefered architecture:"
+		ARCH=$(dlfed_get_arch "$FED_DL") > /dev/zero
+		
+		if [ $doInst = true ] 
+		then	FED_DL="$FED_DL$ARCH/iso/"
+		else	FED_DL="$FED_DL$ARCH/"
+		fi
+
+		tui-printf "Downloading index of $FED_DL" "$PROGRESS"
+		wget -q -K $FED_DL -O "$OUTFILE" --progress=bar
+		tui-status $? "Downloaded index of $stage ($FED_DL)"
+		grep href "$OUTFILE" | grep .iso|awk '{print $2}'  > "$OUTFILEb" && \
+		rm -f "$OUTFILE" ; touch "$OUTFILE"
+		;;
+	esac
+#
+#	Filter usefull url
+#	
+	tui-printf "Parsing urls..." "$PROGRESS"
+	case $mode in
+	"night"|"nightly")
+		url="http://koji.fedoraproject.org/koji/$(grep taskinfo $OUTFILE|grep -i $spin|sed s,\",\ ,g|awk '{print $3}')"
+		wget -q -K "$url" -O "$OUTFILE" --progress=bar
+		grep iso "$OUTFILE"
+		#exit
+		#firefox "$OUTFILE"
+		#grep "class=\"spin" "$OUTFILE"
+		;;
+	"get"|"pre")		
+		grep iso "$OUTFILE"|awk '{print $1}'|grep http|grep iso	> "$OUTFILEb"
+		grep iso "$OUTFILE"|awk '{print $2}'|grep http|grep iso	>> "$OUTFILEb"
+		grep iso "$OUTFILE"|awk '{print $3}'|grep http|grep iso	>> "$OUTFILEb"
+		grep iso "$OUTFILE"|awk '{print $4}'|grep http|grep iso	>> "$OUTFILEb"
+		grep iso "$OUTFILE"|awk '{print $5}'|grep http|grep iso	>> "$OUTFILEb"
+		grep iso "$OUTFILE"|awk '{print $6}'|grep http|grep iso	>> "$OUTFILEb"
+		grep -i lxde "$OUTFILE"|awk '{print $2}'|grep http|grep iso	>> "$OUTFILEb"
+		cat "$OUTFILEb" | sort > "$OUTFILE"
+		
+		while read line;do
+			tmp="${line:6: ( - 1 )}"
+			[ ! $mode = raw ] && [ ! iso = "${tmp:( - 3 )}" ] && \
+				tmp="${tmp:0: ( - 9 )}"
+		
+			[ ! iso = "${tmp:( - 3 )}" ] && \
+						tmp="${tmp:0: ( - 2 )}"
+		
+			[ ! iso = "${tmp:( - 3 )}" ] && \
+			tmp="${tmp:0: ( - 9 )}"
+			ISO_FILE[$C]="$(basename $tmp)"
+			ISO_FOUND[$C]="$tmp"
+		
+			((C++))
+		done < "$OUTFILE"
+		tui-status $? "Parsed urls release and pre-releases"
+		rm -f "$OUTFILE" "$OUTFILEb"
+		;;
+	spin|respin)
+		unset ISO_FOUND[@] ISO_FILE[@]
+		while read line;do
+			tmp="${line:6}"
+			this="${line:0:1}"
+			I=0
+			while [ ! $this = "\"" ];do
+				this="${tmp:$I:1}"
+				((I++))
+			done
+			I=$[ $I - 1 ]
+			tmp="${tmp:0:$I}"
+			ISO_FILE[$C]="$tmp"
+			ISO_FOUND[$C]="$FED_DL/$tmp" ; ((C++))
+		done < "$OUTFILEb"
+		while [ $C -gt 0 ];do 
+			echo "${ISO_FOUND[$C]}" > "$OUTFILE"
+			C=$[ $C - 1 ]
+		done
+		tui-status $? "Parsed urls for spins & respins"
+		;;
+	raw)
+		unset ISO_FOUND[@] ISO_FILE[@]
+		while read line;do
+			tmp="${line:6}"
+			thisChar="${line:0:1}"
+			I=0
+			while [ ! $thisChar = "\"" ];do
+				thisChar="${tmp:$I:1}"
+				((I++))
+			done
+			I=$[ $I - 1 ]
+			tmp="${tmp:0:$I}"
+			ISO_FILE[$C]="$tmp"
+			ISO_FOUND[$C]="$FED_DL/$tmp" ; ((C++))
+		done < "$OUTFILEb"
+		while [ $C -gt 0 ];do 
+			echo "${ISO_FOUND[$C]}" > "$OUTFILE"
+			C=$[ $C - 1 ]
+		done
+		tui-status $? "Parsed urls for ${stage:0: ( - 1 )} with ${ARCH:0: ( - 1 )}"
+		;;
+	esac
+#
+#	Select url to download
+#
+	tui-title "Please select a file to download:"
+	[ ${mode} = night ] && tui-echo "Have to wait for successfull builds before can work on it again."
+	select tFILE in ${ISO_FILE[@]};do
+		for URL in ${ISO_FOUND[@]};do [ ! "" = "$(echo $URL|grep $tFILE)" ] && break ;done
+		
+		thisFile="$(basename $URL)"
+		tui-title "Downloading $thisFile from $(dirname $URL)"
+		
+		wget -c --progress=bar:force "$URL" -O "$XDG_DOWNLOAD_DIR/$tFILE" && retvar=0 || retvar=1
+		tui-status $retvar "Downloaded $tFILE"
+		
+		# HASH CHECK (only if download was successfull and CHECKSUM file was found
+		if [ $retvar -eq 0 ]
+		then	tui-printf "Looking for CHECKSUM file on $(dirname "$URL")" "$PROGRESS"
+			thisCheck=$(dlfed_get_checksum $(dirname "$URL")) && retvar=0 || retvar=1
+			tui-status "$retvar" "Found $thisCheck"
+			if [ $retvar -eq 0 ]
+			then	tui-printf "Comparing Checksum" "$PROGRESS"
+				shouldbe=$(grep "$tFILE" "$thisCheck"|awk '{print $1}')
+				tui-printf "Comparing Checksum : $shouldbe" "$PROGRESS"
+				actualyis=$(sha256sum "$XDG_DOWNLOAD_DIR/$tFILE"|awk '{print $1}')
+				[ "$shouldbe" = "$actualyis" ] && retvar=0 || retvar=1
+				tui-status $retvar "Comparing Checksum : $shouldbe with $actualyis"
+				exit $retvar
+			else	tui-status 1 "Could not find apropriate checksum file..."
+			fi
+		fi
+	done
