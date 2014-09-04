@@ -33,7 +33,8 @@ file:///mnt /Mounts"
 		DEST=$GTK2
 	sleep 1
 	#printf "cat << EOF\n" > $TMP
-	printf "$CONTENT" > $DEST #\nEOF" >> $TMP
+	printf "$(eval $CONTENT)" > $DEST #\nEOF" >> $TMP
+	sed s,"\$HOME","$HOME",g -i $DEST
 	#source $TMP > "$DEST" 
 	tui-status $? "Wrote locations to $DEST"
 #
@@ -52,6 +53,5 @@ file:///mnt /Mounts"
 	tui-printf "Remove unrequired startup entries" "$WORK"
 	sed s,"sh \$HOME/.config/autostart/first.sh","",g -i $HOME/.bashrc
 	sleep 1
-	nohup rm -f $HOME/.config/autostart/first.sh
+	(nohup rm -f $HOME/.config/autostart/first.sh ; rm nohup.out)
 	tui-status $? "Removed firsttime files"
-	rm nohup.out
