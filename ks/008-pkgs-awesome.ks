@@ -64,4 +64,9 @@
 	-clipit
 	-sylpheed
 	-xterm
+#
+#	Removals from (sea)
+#
+	-xorg-x11-drv-nouveau
+	-*nouveau*
 %end
