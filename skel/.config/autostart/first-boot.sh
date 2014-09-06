@@ -8,6 +8,10 @@
 #	
 	U=$USER
 	sleep 2
+	WIFI_OLD="wlp3s0"
+	WIFI_NEW="$(ifconfig |grep ^w|awk '{print $1}')"
+	WIFI_NEW=${WIFI_NEW:0:-1}
+	sed s,"$WIFI_OLD","$WIFI_NEW",g -i /etc/skel/.config/awesome/rc.lua
 	tui-title "Machine Setup"
 	tui-echo "You're now becoming passwordless sudo..."
 	tui-echo "But therefor you must pass the root's password once."

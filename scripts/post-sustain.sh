@@ -8,7 +8,7 @@
 	# S for search, since sea created them in the first place, I have to look for me ;)
 	S="/home/sea/prjs/iso-awesome-sea"
 	R="/root/spin_files"
-	ln -s $R/make-iso /usr/bin/make-awesomewm
+	ln -s $R/make-iso.sh /usr/bin/make-awesomewm
 	cd $R
 	echo "Prepare files in $R"
 	for f in *;do
