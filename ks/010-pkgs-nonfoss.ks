@@ -1,8 +1,8 @@
 #
-#	Install the things from these repos
+#	Install the things from rpmfusion, etc
 #
 %packages
-#	VirtualBox
+	VirtualBox
 	vlc
 	ogmrip
 	faad2

@@ -4,7 +4,7 @@
 #	Sources
 #
 	[ -f /etc/bashrc ] 				&& . /etc/bashrc	
-#	[ -f /etc/profile.d/tui.sh ] 			&& . /etc/profile.d/tui.sh
+	[ -f /etc/profile.d/tui.sh ] 			&& . /etc/profile.d/tui.sh
 	[ -f $HOME/.config/user-dirs.dirs ] 		&& . $HOME/.config/user-dirs.dirs
 #
 #	Path Updates

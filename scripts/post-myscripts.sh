@@ -3,11 +3,7 @@
 #	Do install tui, so reporting is more visible
 #
 	echo
-	echo "post2-chroot.ks"
-#	echo ; sleep 3
-#	sh -T /tmp/tui/install.sh <<EOF
-
-#EOF
+	echo "post-myscript.sh"
 #
 #	Sutra
 #
@@ -17,3 +13,7 @@
 #
 	cd /root/spin_files/scripts/bin
 	cp * /usr/bin
+#
+#
+	echo "DONE post-myscript.sh"
+	echo

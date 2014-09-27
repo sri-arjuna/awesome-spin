@@ -9,7 +9,7 @@
 	S="/home/sea/prjs/iso-awesome-sea"
 	R="/root/spin_files"
 	ln -s $R/make-iso.sh /usr/bin/make-awesomewm
-	cd $R
+	cd $R/ks
 	echo "Prepare files in $R"
 	for f in *;do
 		echo "* $f"

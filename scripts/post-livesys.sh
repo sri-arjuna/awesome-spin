@@ -1,5 +1,8 @@
 #!/bin/bash
-echo "(Over-)Writing livesys"
+echo
+echo "(Over-)Writing livesys // post-livesys.sh"
+echo
+
 cat >> /etc/rc.d/init.d/livesys << EOF
 # disable screensaver locking and make sure gamin gets started
 cat > /etc/xdg/lxsession/LXDE/autostart << FOE
@@ -15,7 +18,7 @@ cat > /etc/xdg/libfm/pref-apps.conf << FOE
 [Preferred Applications]
 WebBrowser=firefox.desktop
 MailClient=thunderbird.desktop
-#Editor=gedit.desktop
+Editor=pluma.desktop
 FOE
 
 	echo "SED'ing lxdm.conf"
@@ -23,7 +26,7 @@ FOE
 sed -i s/"# autologin=dgod"/"autologin=liveuser"/g /etc/lxdm/lxdm.conf
 
 # Make awesome the default session, as Awesome is the only one, not required
- sed -i s,"session=/usr/bin/startlxde","session=/usr/bin/awesome",g /etc/lxdm/lxdm.conf
+sed -i s,"session=/usr/bin/startlxde","session=/usr/bin/awesome",g /etc/lxdm/lxdm.conf
 
 # Get a cool background
 [ -f /usr/share/backgrounds/default-fedora.png ] || mv /usr/share/backgrounds/default.png /usr/share/backgrounds/default-fedora.png
@@ -37,3 +40,7 @@ cp /usr/share/applications/liveinst.desktop /home/liveuser/liveinst.desktop
 # Remove language panel
 sed -i s/"lang=1"/"lang=0"/g /etc/lxdm/lxdm.conf
 EOF
+
+echo
+echo "DONE post-livesys.sh"
+echo

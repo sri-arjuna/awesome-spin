@@ -6,5 +6,6 @@
 	sh post-myscripts.sh
 	sh post-sustain.sh
 	
-#	read -t 30 -p "Press enter to leave 021-post-chroot.ks" buffer
+echo
+echo "DONE 021-post-chroot.ks"
 %end

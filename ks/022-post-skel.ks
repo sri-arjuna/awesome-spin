@@ -1,7 +1,7 @@
 %post
 #!/bin/bash
 	cd /root/spin_files/scripts
-	sh skel-config.sh
+#	sh skel-config.sh	# Problem is within here !!
 #	sh skel-awesome.sh
 	sh post-livesys.sh
 #
@@ -10,6 +10,7 @@
 	echo
 	echo "selinux restorecon"
 	echo
-	chown -R liveuser:liveuser /home/liveuser
-	#restorecon -R /home/liveuser
+	/usr/sbin/useradd -m liveuser
+	/bin/chown -R liveuser:liveuser /home/liveuser
+	/usr/sbin/restorecon -R /home/liveuser
 %end
