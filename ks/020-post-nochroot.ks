@@ -30,7 +30,7 @@
 	cp -fr	*	 	$dir_target
 	cp -fr	.[a-zA-Z]* 	$dir_target
 	# Copy from /root/spin_files/skel to /etc/skel
-	cp -fr $(cd $dir_target;find) $INSTALL_ROOT/etc/skel
+	#cp -fr $(cd $dir_target;find) $INSTALL_ROOT/etc/skel
 #
 #	Retrieve 'my stuff'
 #
