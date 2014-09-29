@@ -40,4 +40,4 @@
 	[ -f $HOME/.config/prompt-colored-status.sh ] 	&& . $HOME/.config/prompt-colored-status.sh
 #	which sutra 1>/dev/zero 2>/dev/zero && \
 #		sutra || echo "Namaste, $USER :)"
-sh $HOME/.config/autostart/first.sh
+#sh $HOME/.config/autostart/first.sh

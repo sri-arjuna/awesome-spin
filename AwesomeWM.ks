@@ -17,7 +17,7 @@
 	#include 	ks/006-repo-non-foss-rawhide.ks
 	%include 	ks/008-pkgs-awesome.ks
 	%include 	ks/009-pkgs-dev.ks
-##	include 	ks/010-pkgs-nonfoss.ks
+	%include 	ks/010-pkgs-nonfoss.ks
 
 # Sytem changes
 	%include 	ks/020-post-nochroot.ks

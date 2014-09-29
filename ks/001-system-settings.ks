@@ -1,10 +1,11 @@
-timezone Europe/Zurich --nontp
-lang de_CH.UTF-8
-keyboard sg
-
 ##lang en_US.UTF-8
 ##keyboard us
 ##timezone US/Eastern
+
+timezone Europe/Zurich --nontp
+lang de_CH.UTF-8
+keyboard sg
+keyboard --vckeymap=sg --xlayouts='sg'
 
 
 auth --useshadow --enablemd5

@@ -1,7 +1,7 @@
 %post
 #!/bin/bash
 	cd /root/spin_files/scripts
-#	sh skel-config.sh	# Problem is within here !!
+	sh skel-config.sh	# Problem is within here !!
 #	sh skel-awesome.sh
 	sh post-livesys.sh
 #

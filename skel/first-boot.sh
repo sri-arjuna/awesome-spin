@@ -2,8 +2,6 @@
 #
 #	This is done only once, and NOT for every new user
 #
-	alias tui-yesno=tui-bol-yesno
-#
 #	Sudo
 #	
 	U=$USER

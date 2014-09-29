@@ -60,5 +60,5 @@ file:///mnt /Mounts"
 	tui-printf "Remove unrequired startup entries" "$WORK"
 	sed s,"sh \$HOME/.config/autostart/first.sh","",g -i $HOME/.bashrc
 	sleep 1
-	(nohup rm -f $HOME/.config/autostart/first.sh ; rm nohup.out) 2>/dev/zero
+	rm -f $HOME/.config/autostart/first.sh
 	tui-status $? "Removed firsttime files"
