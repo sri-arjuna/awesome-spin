@@ -15,4 +15,6 @@
 	do 	echo "Building GRUB2 Config in :: $f"
 		grub2-mkconfig -o $f
 	done
+	# Enable the scripts of mine from github
+	echo "PATH=\"\$PATH:/opt\"" >> /etc/bashrc
 %end

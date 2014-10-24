@@ -12,6 +12,8 @@
 	plymouth-theme-solar
 	vicious
 	tui
+	essentials
+	vhs
 	wget
 	xscreensaver-gl-extras
 #

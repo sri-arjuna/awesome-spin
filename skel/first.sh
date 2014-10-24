@@ -54,6 +54,23 @@ file:///mnt /Mounts"
 			tui-status $? "Executed first time machine script"
 			;;
 	esac
+	# Pluma Settings
+	cmd="gsettings set org.mate.pluma "
+	$cmd print-line-numbers 0
+	$cmd max-recents 10
+	$cmd color-scheme cobalt
+	for T in auto-ident bracket-matching enable-search-highlighting enable-syntax-highlighting highlight-current-line statusbar-visible
+	do 	$cmd $T true
+	done
+	$cmd toolbar-visible false
+	
+#	$cmd auto-ident true
+#	$cmd bracket-matching true
+#	$cmd enable-search-highlighting true
+#	$cmd enable-syntax-highlighting true
+#	$cmd highlight-current-line true
+#	$cmd statusbar-visible true
+
 #
 #	Remove me after first run
 #	

@@ -12,7 +12,7 @@
 	mpeg2dec
 	x264
 	xvidcore
-#	libdvdcss
+	libdvdcss
 	libdvdnav
 	libdvdread
 	vobcopy
