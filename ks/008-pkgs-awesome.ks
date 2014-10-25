@@ -11,11 +11,16 @@
 	lxdm
 	plymouth-theme-solar
 	vicious
-	tui
-	essentials
-	vhs
 	wget
 	xscreensaver-gl-extras
+#
+#	My Stuff
+#
+	tui
+	essentials
+	sutra-tui
+	vhs
+	efi-helper	
 #
 #	GUI Apps
 #
@@ -66,6 +71,7 @@
 	-clipit
 	-sylpheed
 	-xterm
+	-libqtzeitgeist
 #
 #	Removals from (sea)
 #
