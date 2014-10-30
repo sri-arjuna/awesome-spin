@@ -26,7 +26,7 @@
 #
 	abiword
 	filezilla
-	firefox
+	#firefox
 	pluma
 	gnumeric
 	gpicview
@@ -71,7 +71,7 @@
 	-clipit
 	-sylpheed
 	-xterm
-	-libqtzeitgeist
+#	-libqtzeitgeist
 #
 #	Removals from (sea)
 #
