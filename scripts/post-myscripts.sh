@@ -7,13 +7,16 @@
 #
 #	Sutra
 #
-	ln -s /usr/share/sutra/sutra /usr/bin/sutra
+#	ln -s /usr/share/sutra/sutra /usr/bin/sutra
 #
 #	Scripts in bin
 #
-	cd /root/spin_files/scripts/bin
-	cp * /usr/bin
+#	cd /root/spin_files/scripts/bin
+#	cp * /usr/bin
 #
 #
-	echo "DONE post-myscript.sh"
-	echo
+	echo "
+	
+	DONE post-myscript.sh
+	
+	"

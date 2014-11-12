@@ -18,7 +18,7 @@
 #
 	tui
 	essentials
-	sutra-tui
+#	sutra-tui
 	vhs
 	efi-helper	
 #
@@ -26,18 +26,17 @@
 #
 	abiword
 	filezilla
-	#firefox
+	firefox
 	pluma
 	gnumeric
 	gpicview
-	#gtk-recordmydesktop
 	lxterminal
+	mupdf
 	mtpaint
 	pcmanfm
-	#recordmydesktop
-	rhythmbox
+#	rhythmbox
 	thunderbird
-	totem
+#	totem
 	transmission
 	xchat
 #
@@ -75,6 +74,6 @@
 #
 #	Removals from (sea)
 #
-	-xorg-x11-drv-nouveau
-	-*nouveau*
+#	-xorg-x11-drv-nouveau
+#	-*nouveau*
 %end

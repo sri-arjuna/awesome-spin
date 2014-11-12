@@ -2,7 +2,7 @@
 #	Install the things from rpmfusion, etc
 #
 %packages
-	chromium
+#	chromium
 	VirtualBox
 	vlc
 	ogmrip

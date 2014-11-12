@@ -37,13 +37,11 @@
 		RELEASEVER=$1
 	[[ $RELEASEVER = rawhide ]] && \
 		CFG=${CFG/$prj.ks/$prj-rawhide.ks}
-	FSLABEL=${DISTRO}_${RELEASEVER}_${prj}_${ARCH}
-	TITLE="$DISTRO $RELEASEVER ($prj) ${ARCH}bit by sea"
+	FSLABEL="AwesomeWM-Spin_${RELEASEVER}_${ARCH}bit"
+	TITLE="AwesomeWM-Spin (${RELEASEVER}/${ARCH}bit)"
 	TMPDIR=/mnt/$FSLABEL
 	VERBOSE="-v"
-	printf "$TMPDIR" > /tmp/make-iso.tmp
-	printf "$home"	 > /tmp/make-iso.home
-	printf "$prjs"	 > /tmp/make-iso.prj
+
 #
 #	Pre-clean temp dir
 #

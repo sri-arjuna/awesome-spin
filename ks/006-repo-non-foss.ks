@@ -6,6 +6,7 @@ repo 	--name=adobe-linux-i386  --baseurl=http://linuxdownload.adobe.com/linux/i3
 #repo	--name=rpm.livna.org	 --mirrorlist=http://rpm.livna.org/mirrorlist								#--failovermethod=roundrobin	#--gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-livna
 #repo 	--name=VirtualBox 	 --baseurl=http://download.virtualbox.org/virtualbox/rpm/fedora/$releasever/$basearch 			#--gpgkey=http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc --gpgcheck=1
 repo    --name=PostInstallerF    --baseurl=http://sourceforge.net/projects/postinstaller/files/fedora/releases/$releasever/$basearch/updates/
+#repo --name=chromium --baseurl=http://repos.fedorapeople.org/repos/spot/chromium-stable/fedora-$releasever/$basearch/
 
 #repo 	--name= \
 #	--baseurl= \

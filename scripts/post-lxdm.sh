@@ -26,4 +26,8 @@ EOF
 	sed -i s,"session=/usr/bin/startlxde","session=/usr/bin/awesome",g /etc/lxdm/lxdm.conf
 #
 #
-	echo "DONE LXDM conf"
+	echo "
+	
+	DONE LXDM conf
+	
+	"
