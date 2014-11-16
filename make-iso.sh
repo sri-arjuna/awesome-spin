@@ -21,14 +21,15 @@
 
 	usr=${home##*/}
 	CFG=$SRC_DIR/$prj.ks
-	if $make32
-	then	pre="time setarch linux32"
-		#pre="$(which setarch) i686"
-		#pre="setarch i686"
+	[[ x86_64 = $(uname -m) ]] && \
+		ARCH=64 || \
 		ARCH=32
-	else	pre="time"
-		ARCH=64
-	fi
+	fs_string=$(uname -r)
+	$make32 && \
+		pre="time setarch linux32" && \
+		[[ $ARCH = x86_64 ]] && \
+		fs_string=${fs_string/$ARCH/i686} || \
+		pre="time"
 #
 #	Variables Dynamic
 #
@@ -37,7 +38,7 @@
 		RELEASEVER=$1
 	[[ $RELEASEVER = rawhide ]] && \
 		CFG=${CFG/$prj.ks/$prj-rawhide.ks}
-	FSLABEL="AwesomeWM-Spin_${RELEASEVER}_${ARCH}bit"
+	FSLABEL="AwesomeWM-$fs_string"
 	TITLE="AwesomeWM-Spin (${RELEASEVER}/${ARCH}bit)"
 	TMPDIR=/mnt/$FSLABEL
 	VERBOSE="-v"

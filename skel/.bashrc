@@ -3,19 +3,20 @@
 #
 #	Sources
 #
-	[ -f /etc/bashrc ] 				&& . /etc/bashrc	
-	[ -f /etc/profile.d/tui.sh ] 			&& . /etc/profile.d/tui.sh
-	[ -f $HOME/.config/user-dirs.dirs ] 		&& . $HOME/.config/user-dirs.dirs
+	[[ -f /etc/bashrc ]] 				&& . /etc/bashrc	
+	[[ -f /etc/profile.d/tui.sh ]] 			&& . /etc/profile.d/tui.sh
+	[[ -f $HOME/.config/user-dirs.dirs ]] 		&& . $HOME/.config/user-dirs.dirs
 #
 #	Path Updates
 #
-	[ -d $HOME/.local/bin ]				&& PATH+=":$HOME/.local/bin"
+	[[ -d $HOME/bin ]]				&& PATH+=":$HOME/bin" && [[ -z "$XDG_SCRIPTS_DIR" ]] && XDG_SCRIPTS_DIR=$HOME/bin
+	[[ -d $HOME/.local/bin ]]			&& PATH+=":$HOME/.local/bin" && [[ -z "$XDG_SCRIPTS_DIR" ]] && XDG_SCRIPTS_DIR=$HOME/.local/bin
 #
 #	Aliases
 #
 	alias pm="sudo pm-suspend"
 	alias yiy="sudo yum install -y"
-	alias upd="sudo yum upgrade -y kernel* yum* ; sudo yum upgrade -y"
+	alias upd="sudo yum update -y kernel* yum* ; sudo yum update -y"
 	alias ls="ls --group-directories-first --color=auto -h"
 	alias ll="ls -l"
 	alias lla="ls -la"
@@ -37,7 +38,7 @@
 #
 #	Execute on terminal display, PS1 & a vedic sutra
 #
-	[ -f $HOME/.config/prompt-colored-status.sh ] 	&& . $HOME/.config/prompt-colored-status.sh
-#	which sutra 1>/dev/zero 2>/dev/zero && \
-#		sutra || echo "Namaste, $USER :)"
+	[[ -f $HOME/.config/prompt-colored-status.sh ]] 	&& . $HOME/.config/prompt-colored-status.sh
+	which sutra 1>/dev/zero 2>/dev/zero && \
+		sutra || echo "Namaste, $USER :)"
 #sh $HOME/.config/autostart/first.sh

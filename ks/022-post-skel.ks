@@ -10,7 +10,7 @@
 	echo
 	echo "selinux restorecon"
 	echo
-	/usr/sbin/useradd -m liveuser
+#	/usr/sbin/useradd -m liveuser
 	/bin/chown -R liveuser:liveuser /home/liveuser
 	/usr/sbin/restorecon -R /home/liveuser
 %end

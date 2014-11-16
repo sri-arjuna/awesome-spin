@@ -28,6 +28,7 @@
 	filezilla
 	firefox
 	pluma
+	notepadqq
 	gnumeric
 	gpicview
 	lxterminal
