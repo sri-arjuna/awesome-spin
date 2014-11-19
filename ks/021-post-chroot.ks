@@ -1,10 +1,10 @@
 %post
 #!/bin/bash
 	cd /root/spin_files/scripts/
-	sh post-grub.sh
+#	sh post-grub.sh
 	sh post-lxdm.sh
 #	sh post-myscripts.sh
-	sh post-sustain.sh
+#	sh post-sustain.sh
 #
 #	How about styling GRUB2 & Plymouth in advance?
 #

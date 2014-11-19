@@ -18,7 +18,7 @@
 #
 	tui
 	essentials
-#	sutra-tui
+	sutra-tui
 	vhs
 	efi-helper	
 #
@@ -27,7 +27,7 @@
 	abiword
 	filezilla
 	firefox
-	pluma
+	#pluma
 	notepadqq
 	gnumeric
 	gpicview
@@ -72,6 +72,7 @@
 	-sylpheed
 	-xterm
 #	-libqtzeitgeist
+	-midori
 #
 #	Removals from (sea)
 #

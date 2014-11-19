@@ -23,7 +23,9 @@ FOE
 
 	echo "SED'ing lxdm.conf"
 # set up auto-login for liveuser
-sed -i s/"# autologin=dgod"/"autologin=liveuser"/g /etc/lxdm/lxdm.conf
+usr=$(ls /home --hide=lost*)
+usr=$(echo $usr|awk '{print $1}')
+[[ ! -z "$usr" ]] && sed -i s/"# autologin=dgod"/"autologin=$usr"/g /etc/lxdm/lxdm.conf
 
 # Make awesome the default session, as Awesome is the only one, not required
 sed -i s,"session=/usr/bin/startlxde","session=/usr/bin/awesome",g /etc/lxdm/lxdm.conf
