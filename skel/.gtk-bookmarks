@@ -1,6 +1,9 @@
 file://$HOME/notepad Notepad
-file://$HOME/net Internet
-file://$HOME/media Multimedia
 file://$HOME/priv Personal
-file:///mnt Mounts
-file://$HOME/net/fas FAS-Webspace
+file://$HOME/prjs Projects
+file://$HOME/.local/bin Scripts
+file://$HOME/net/dls Downloads
+file://$HOME/media Multimedia
+file:///mnt Disk mounts & iso
+file:///nas Network Attached Storage
+file://$HOME/net/fas/$USER/public_html FAS-Webspace

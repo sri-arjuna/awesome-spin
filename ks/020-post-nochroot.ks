@@ -3,6 +3,8 @@
 #
 %post --nochroot
 #!/bin/sh
+msg() { printf '\n\n\t_ %s _\n\n\n' "${@}" ; }
+msg "POST - NOCHROOT - START"
 #
 #	Variables
 #
@@ -21,11 +23,17 @@
 # 	Copy requires kickstarts files to the image's /root/spin_file
 #
 	# Prepare subfolder to be copied to /root/spin_files
+	
+	msg "Copy from $dir_src to $dir_target"
+	
+	set -x
 	cd "${dir_src}"
 	cp -fr	*	 	"$dir_target"
 	cp -fr	.[a-zA-Z]* 	"$dir_target"
+	set +x
 #
 #	User Configuration (/etc/skel)
 #
 	git clone $URL/awesome-config.git 	"$root/etc/skel/.config/awesome"
+msg "POST - NOCHROOT - END"
 %end

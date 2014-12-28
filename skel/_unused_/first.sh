@@ -1,7 +1,7 @@
 #!/bin/bash
 # first.sh
 # GNU General Public License (GPL) 2014 by Simon Arjuna Erat (sea) (erat.simon@gmail.com)
-# Description:	Does some basic tweaking optimized for the AwesomeWM-Spin by me.
+# Description:	
 # ------------------------------------------------------
 #
 #	Variables
@@ -76,34 +76,11 @@
 	sudo plymouth-set-default-theme solar -R
 	tui-status $? "Changed boot animation to solar"
 	
-	sudo dracut-rebuild
-	
 	if tui-yesno "Change hostname ($(hostname))?"
 	then	newhost=$(tui-read "Enter the new hostname:")
 		sudo hostname $newhost
 		sudo su -c "echo $newhost > /etc/hostname"
 		tui-status $? "Hostname is: $(hostname)"
-	fi
-	
-	if tui-yesno "Disable some services now? (asking one-by-one)"
-	then	# Yes ask some services
-		tui-title "Optimize for F21+"
-		for S in rsyslog 
-		do
-			sudo systemctl disable $S.service
-			tui-status $? "* Disabled $S"
-		done
-		
-		tui-title "Optional (suggested)"
-		for S in bluetooth livesys livesys-late ModemManager 
-		do
-			if tui-yesno "Disable: $S?"
-			then	sudo systemctl disable $S.service
-				RET=$?
-			else	RET=4
-			fi
-			tui-status $RET "* Disabled $S"
-		done
 	fi
 	
 	tui-wait 10s

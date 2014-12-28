@@ -19,4 +19,13 @@
 	livecd-tools
 	spin-kickstarts
 	createrepo
+#
+#	NotepadQQ
+#
+#	qt5-qtsvg-devel
+#	qt5-qtwebkit-devel
+#	qt-creator
+#	-qt-doc
+#	-libqtzeitgeist
+#	-tracker
 %end

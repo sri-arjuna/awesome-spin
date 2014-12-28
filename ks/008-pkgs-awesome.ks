@@ -18,7 +18,7 @@
 #
 	tui
 	essentials
-	sutra-tui
+#	sutra-tui
 	vhs
 	efi-helper	
 #
@@ -34,6 +34,7 @@
 	lxterminal
 	mupdf
 	mtpaint
+	dosbox
 	pcmanfm
 #	rhythmbox
 	thunderbird
@@ -44,6 +45,7 @@
 #	Small additions, possible 'required' for multimedia
 #
 	lsdvd
+	autofs
 #
 #	Fonts
 #
@@ -70,12 +72,12 @@
 #
 	-clipit
 	-sylpheed
-	-xterm
+#	-xterm
 #	-libqtzeitgeist
 	-midori
 #
 #	Removals from (sea)
 #
-#	-xorg-x11-drv-nouveau
-#	-*nouveau*
+	-xorg-x11-drv-nouveau
+	-*nouveau*
 %end

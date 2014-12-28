@@ -4,6 +4,7 @@
 %packages
 #	chromium
 	VirtualBox
+	dkms
 	vlc
 	ogmrip
 	faad2

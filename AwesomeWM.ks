@@ -44,6 +44,7 @@
 # Might be removable
 	#dial-up
 	@multimedia
+	libogg
 #
 # Required by LiveImage
 #
