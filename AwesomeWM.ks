@@ -7,8 +7,10 @@
 #	Default environment first
 #
 	%include 	ks/001-system-settings.ks
+##	%include 	/usr/share/spin-kickstarts/fedora-livecd-awesome.ks
 	%include 	/usr/share/spin-kickstarts/fedora-repo-not-rawhide.ks
-	%include 	/usr/share/spin-kickstarts/fedora-live-minimization.ks
+	%include 	/usr/share/spin-kickstarts/fedora-live-minimization.ks	
+
 # AwesomeWM, here the customization begins
 	%include 	ks/005-repo-sea.ks
 	%include 	ks/006-repo-non-foss.ks
