@@ -18,7 +18,7 @@
 #
 	tui
 	essentials
-#	sutra-tui
+	sutra-tui
 	vhs
 	efi-helper	
 #
@@ -46,6 +46,7 @@
 #
 	lsdvd
 	autofs
+	cdw
 #
 #	Fonts
 #

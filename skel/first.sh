@@ -63,7 +63,7 @@
 	sudo tui-conf-set $G GRUB_THEME /boot/grub2/themes/circled-nasa-horizon/theme.txt
 	tui-status $? "* Set theme circled-nasa-horizon"
 	
-	sed s,GRUB_GFXMODE,GRUB_GFXMODE,g -i $G
+	#sed s,GRUB_GFXMODE,GRUB_GFXMODE,g -i $G
 	sudo tui-conf-set $G GRUB_GFXMODE $RESOLUTION
 	tui-status $? "* Set resolution to $RESOLUTION"
 	#GRUB_GFXMODE=1440x900x16
