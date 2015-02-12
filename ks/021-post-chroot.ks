@@ -49,6 +49,22 @@ EOF
 	"
 	
 	# For some reason , the repo did not get saved in early builds
+	cat > /etc/yum.repos.d/rpmfusion-Free.repo << EOF
+[rpmfusion-free]
+name=rpmfusion-free
+mirrorlist=http://mirrors.rpmfusion.org/mirrorlist?repo=free-fedora-$releasever&arch=$basearch
+enabled=1
+gpgcheck=0
+EOF
+
+cat > /etc/yum.repos.d/rpmfusion-nonfree.repo << EOF
+[rpmfusion-nonfree]
+name=rpmfusion-nonfree
+mirrorlist=http://mirrors.rpmfusion.org/mirrorlist?repo=nonfree-fedora-$releasever&arch=$basearch
+enabled=1
+gpgcheck=0
+EOF
+
 	cat > /etc/yum.repos.d/sea-devel.repo << EOF
 [FedoraPeople-sea]
 name=sea's devel packages
@@ -56,5 +72,29 @@ baseurl=http://sea.fedorapeople.org/repo
 enabled=1
 gpgcheck=0
 EOF
+	cat > /etc/yum.repos.d/adobe-i386.repo << EOF
+[adobe-i386]
+name=adobe-linux-i386 
+baseurl=http://linuxdownload.adobe.com/linux/i386/
+enabled=0
+gpgcheck=0
+EOF
+
+	cat > /etc/yum.repos.d/adobe-x86.repo << EOF
+[adobe-x86]
+name=adobe-linux-x86-experimental
+baseurl=http://linuxdownload.adobe.com/linux/x86/
+enabled=1
+gpgcheck=0
+EOF
+
+	cat > /etc/yum.repos.d/spot-chromium.repo << EOF
+[spot-chromium]
+name=Chromium ($releasever)
+baseurl=http://repos.fedorapeople.org/repos/spot/chromium-stable/fedora-$releasever/$basearch/
+enabled=1
+gpgcheck=0
+EOF
+
 msg "POST - CHROOT - END"
 %end

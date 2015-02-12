@@ -3,8 +3,8 @@
 #
 %packages
 #	chromium
-	VirtualBox
-	dkms
+#	VirtualBox
+#	dkms
 	vlc
 	ogmrip
 	faad2
@@ -19,7 +19,7 @@
 	libdvdread
 	vobcopy
 #	lpf-flash-plugin
-	flash-plugin
+#	flash-plugin
 	gstreamer
 	gstreamer1
 	gstreamer-ffmpeg 

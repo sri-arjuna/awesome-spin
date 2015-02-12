@@ -25,17 +25,17 @@
 #	GUI Apps
 #
 	abiword
-	filezilla
-	firefox
-	#pluma
+#	filezilla
+	-firefox
+	chromium
 	notepadqq
 	gnumeric
 	gpicview
 	lxterminal
 	mupdf
 	mtpaint
-	dosbox
-	pcmanfm
+#	dosbox
+	pcmanfm-qt5
 #	rhythmbox
 	thunderbird
 #	totem
@@ -44,9 +44,11 @@
 #
 #	Small additions, possible 'required' for multimedia
 #
-	lsdvd
 	autofs
+	afuse
 	cdw
+	lsdvd
+	
 #
 #	Fonts
 #
@@ -74,7 +76,7 @@
 	-clipit
 	-sylpheed
 #	-xterm
-#	-libqtzeitgeist
+	-libqtzeitgeist
 	-midori
 #
 #	Removals from (sea)

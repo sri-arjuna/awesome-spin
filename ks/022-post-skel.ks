@@ -44,15 +44,16 @@ cat > /etc/xdg/libfm/pref-apps.conf << FOE
 [Preferred Applications]
 WebBrowser=firefox.desktop
 MailClient=thunderbird.desktop
-Editor=pluma.desktop
+Editor=notepadqq.desktop
 FOE
 
 	echo "SED'ing lxdm.conf"
 # set up auto-login for liveuser
-usr=$(ls /home --hide=lost*)
+usr=$(ls /home --hide=lost* --hide=liveuser)
 usr=$(echo $usr|awk '{print $1}')
 [[ -z "$usr" ]] && usr=liveuser
-sed -i s/"# autologin=dgod"/"autologin=$usr"/g /etc/lxdm/lxdm.conf
+sed -i s/"# autologin"/"autologin"/g /etc/lxdm/lxdm.conf
+sed -i s/"autologin=.*"/"autologin=$usr"/g /etc/lxdm/lxdm.conf
 
 # Make awesome the default session, as Awesome is the only one, not required
 sed -i s,"session=/usr/bin/startlxde","session=/usr/bin/awesome",g /etc/lxdm/lxdm.conf
